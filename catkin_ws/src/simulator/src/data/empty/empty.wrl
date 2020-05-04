@@ -1,0 +1,16 @@
+
+
+;******************************************************************************
+;* File: random_5.wrl				     			      *
+;* Purpose: Definition of the forbidden and allowed areas in the Robot's      *
+;*          world. These areas are derivated from the objects in the	      *
+;*	    world.				      			      *
+;******************************************************************************
+
+
+
+( dimensions random 1.000000 1.000000 )
+( polygon wall external_wall_1 0.00 0.00 0.00 0.990000 0.010000 0.990000 0.010000 0.00 )
+( polygon wall external_wall_2 0.00 0.990000 0.00 1.000000 1.000000 1.000000 1.000000 0.990000 )
+( polygon wall external_wall_3 0.990000 0.00 0.990000 1.000000 1.000000 1.000000 1.000000 0.00 )
+( polygon wall external_wall_4 0.00 0.00 0.00 0.010000 1.000000 0.010000 1.000000 0.00 )

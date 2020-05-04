@@ -1,0 +1,4 @@
+int32 grasp
+string name
+---
+bool done

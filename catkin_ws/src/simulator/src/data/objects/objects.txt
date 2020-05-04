@@ -1,0 +1,6 @@
+blockA .2 .1
+blockB .3 .1
+blockC .1 .1
+blockD .7 .8
+blockE .6 .8
+blockF .8 .8

@@ -1,0 +1,15 @@
+;******************************************************************************
+;* File: room.wrl                                                             *
+;*          Definition of the forbidden and allowed areas in the Robot's      *
+;*          world. These areas are derivated from the objects in the          *
+;*          world.                                                            *
+;******************************************************************************
+
+( dimensions room 1.000 1.000 )
+
+( polygon obstacle obs1  .40 .55 .60 .55 .60 .35 .40 .35 )
+
+( polygon wall wall1  0.0 0.0 0.0 1.0 0.01 1.0 0.01 0.0 )
+( polygon wall wall2  0.0 0.99 0.0 1.0 1.0 1.0 1.0 0.99 )
+( polygon wall wall2  0.99 1.0 1.0 1.0 1.0 0.0 0.99 0.0 )
+( polygon wall wall2  1.0 0.01 1.0 0.0 0.0 0.0 0.0 0.01 )

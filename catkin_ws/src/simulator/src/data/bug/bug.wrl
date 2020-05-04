@@ -1,0 +1,23 @@
+;******************************************************************************
+;* File: bug.wrl                                                              *
+;*          Definition of the forbidden and allowed areas in the Robot's      *
+;*          world. These areas are derivated from the objects in the          *
+;*          world.                                                            *
+;******************************************************************************
+
+( dimensions bug 1.000 1.000 )
+
+( polygon wall wall1  0.0 0.0 0.0 1.0 0.01 1.0 0.01 0.0 )
+( polygon wall wall2  0.0 0.99 0.0 1.0 1.0 1.0 1.0 0.99 )
+( polygon wall wall2  0.99 1.0 1.0 1.0 1.0 0.0 0.99 0.0 )
+( polygon wall wall2  1.0 0.01 1.0 0.0 0.0 0.0 0.0 0.01 )
+
+( polygon obstacle obs1 0.40 0.70 .40 .75 .70 .75 0.70 0.70  )
+( polygon obstacle obs2 .65 .7 .7 .7 .7 .4 .65 .4 )
+( polygon obstacle obs1 0.40 0.35 .40 .4 .70 .4 0.70 0.35  )
+
+;( polygon obstacle obs1 .40 .75 .60 .75 .60 .60 .40 .60 )
+;( polygon obstacle obs2 .50 .75 .70 .75 .70 .40 .50 .40 )
+
+
+

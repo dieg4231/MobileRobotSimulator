@@ -1,0 +1,4 @@
+int32[200] nodes_algorithm
+int32 num_nodos 
+---
+int32 success

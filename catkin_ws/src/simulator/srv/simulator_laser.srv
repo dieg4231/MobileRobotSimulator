@@ -1,0 +1,6 @@
+float32 robot_x
+float32 robot_y
+float32 robot_theta
+int32 new_simulation
+---
+float32[512] sensors

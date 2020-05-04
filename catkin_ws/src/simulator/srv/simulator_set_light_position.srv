@@ -1,0 +1,4 @@
+float32 light_x
+float32 light_y
+---
+bool success
