@@ -398,7 +398,6 @@ class MobileRobotSimulator(threading.Thread):
 #####################################
 #####################################
 	def read_objects(self): 
-		
 		for polygon in self.objects_data:
 			self.w.delete(polygon[3])
 			self.w.delete(polygon[4])
@@ -415,8 +414,8 @@ class MobileRobotSimulator(threading.Thread):
 						self.objects_data.append([words[0],float(words[1]),float(words[2]) ,-1,-1] )
 
 				for i,objects_datas in enumerate(self.objects_data):
-					objects_datas[3] = self.w.create_rectangle( (objects_datas[1]*self.canvasX)/self.mapX -10, ((1-objects_datas[2])*self.canvasY)/self.mapY -10 , (objects_datas[1]*self.canvasX)/self.mapX +10, ((1-objects_datas[2])*self.canvasY)/self.mapY +10  ,fill="#9FFF3D",outline="#9FFF3D")
-					objects_datas[4] = self.w.create_text((objects_datas[1]*self.canvasX)/self.mapX ,((1-objects_datas[2])*self.canvasY)/self.mapY , fill="#9E4124",font="Calibri 10 bold",text=objects_datas[0])
+					objects_datas[3] = self.w.create_rectangle( (objects_datas[1]*self.canvasX)/self.mapX -10, ( (self.mapY-objects_datas[2])*self.canvasY)/self.mapY -10 , (objects_datas[1]*self.canvasX)/self.mapX +10, ((self.mapY-objects_datas[2])*self.canvasY)/self.mapY +10  ,fill="#9FFF3D",outline="#9FFF3D")
+					objects_datas[4] = self.w.create_text((objects_datas[1]*self.canvasX)/self.mapX ,((self.mapY-objects_datas[2])*self.canvasY)/self.mapY , fill="#9E4124",font="Calibri 10 bold",text=objects_datas[0])
 			except IOError:
 				tkMessageBox.showerror("Objects erros ", "Ups! an error occurred. \n Please check objects.txt syntax ")
 		else:
