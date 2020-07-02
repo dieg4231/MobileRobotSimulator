@@ -11,8 +11,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 The things you need to install:
 
-- [ROS Kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu)
-- [Ubuntu 16.4](http://releases.ubuntu.com/16.04/)
+- [ROS Melodic](http://wiki.ros.org/melodic/Installation/Ubuntu)
+- [Ubuntu 18.04](http://releases.ubuntu.com/18.04/)
 
 
 ### Installing
