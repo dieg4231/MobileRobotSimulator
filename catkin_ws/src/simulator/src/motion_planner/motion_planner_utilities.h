@@ -228,7 +228,7 @@ int get_light_values_RealRobot(float *intensity, float *values)
     }
     else
     {
-        ROS_ERROR("Failed to call service  simulator_light_r");
+        ROS_ERROR("Failed to call service  simulator_light_RealRobot");
     }
 }
 
@@ -461,7 +461,7 @@ int move_RealRobot(float theta,float distance)
     }
     else
     {
-        ROS_ERROR("Failed to call service simulator_r");
+        ROS_ERROR("Failed to call service simulator_move_RealRobot");
 
     }
 
