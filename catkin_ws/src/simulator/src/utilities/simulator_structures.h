@@ -17,7 +17,7 @@ typedef struct parameters_
 	float light_y;
 	int behavior;
 	int steps;
-	bool turtle;
+	bool useRealRobot;
 } parameters;
 
 typedef struct next_position_

@@ -84,16 +84,16 @@ int main(int argc ,char **argv)
             // it gets sensory data
             ros::spinOnce();
 
-            if (!params.turtle)
+            if (!params.useRealRobot)
             {
                 get_light_values(&intensity,light_readings); // function in ~/catkin_ws/src/simulator/src/motion_planner/motion_planner_utilities.h
 
                 get_lidar_values(lidar_readings,params.robot_x,
-                                 params.robot_y,params.robot_theta,params.turtle); // function in ~/catkin_ws/src/simulator/src/motion_planner/motion_planner_utilities.h
+                                 params.robot_y,params.robot_theta,params.useRealRobot); // function in ~/catkin_ws/src/simulator/src/motion_planner/motion_planner_utilities.h
             }
             else
             {
-                get_light_values_turtle(&intensity,light_readings); // function in ~/catkin_ws/src/simulator/src/motion_planner/motion_planner_utilities.h
+                get_light_values_RealRobot(&intensity,light_readings); // function in ~/catkin_ws/src/simulator/src/motion_planner/motion_planner_utilities.h
                 for( i = 0; i < 512; i++)
                     lidar_readings[i] = lasers[i];
             }

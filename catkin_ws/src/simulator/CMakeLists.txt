@@ -81,7 +81,7 @@ message(CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS})
    simulator_algorithm_result.srv
    simulator_stop.srv
    simulator_set_light_position.srv
-   simulator_turtlebot.srv
+   simulator_MoveRealRobot.srv
    simulator_object_interaction.srv
    simulator_find_obj.srv
    simulator_manipulator.srv

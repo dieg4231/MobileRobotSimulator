@@ -1554,7 +1554,7 @@ class MobileRobotSimulator(threading.Thread):
 
 		self.lableTurtleBot = Label(self.rightMenu, text = "Real robot" ,background = self.backgroundColor ,foreground = self.titlesColor ,font = self.headLineFont)
 		self.varTurtleBot   = IntVar()
-		self.checkTurtleBot = Checkbutton(self.rightMenu ,text = 'Use TurtleBot' ,variable = self.varTurtleBot ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_real_robot )
+		self.checkTurtleBot = Checkbutton(self.rightMenu ,text = 'Use real robot' ,variable = self.varTurtleBot ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_real_robot )
 		
 
 		#### Right menu widgets grid			

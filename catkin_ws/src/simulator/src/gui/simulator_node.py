@@ -121,7 +121,7 @@ def ros():
 		msg_params.run = parameters[14]
 		msg_params.behavior = parameters[15]
 		msg_params.steps = parameters[16]
-		msg_params.turtle = parameters[16]
+		msg_params.useRealRobot = parameters[16]
 		pub_params.publish(msg_params)
 
 		x = parameters[0]

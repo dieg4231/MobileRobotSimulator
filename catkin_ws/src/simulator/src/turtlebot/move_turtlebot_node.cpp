@@ -148,8 +148,11 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "move_turtle_node");
     ros::NodeHandle n;
     ros::Subscriber sub_odometry = n.subscribe("odom", 1, odomCallback);
-    movement_pub = n.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/navi",1); //for sensors the value after , should be higher to get a more accurate result (queued)
-    ros::ServiceServer service = n.advertiseService("simulator_move_turtle", move_turtle);
+    //movement_pub = n.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/navi",1); //for sensors the value after , should be higher to get a more accurate result (queued)
+    movement_pub = n.advertise<geometry_msgs::Twist>("/cmd_vel",1); //for sensors the value after , should be higher to get a more accurate result (queued)
+    
+
+    ros::ServiceServer service = n.advertiseService("simulator_move_RealRobot", move_turtle);
     ROS_INFO("start move_turtle_node ");
     ros::spin();
     return 0;
