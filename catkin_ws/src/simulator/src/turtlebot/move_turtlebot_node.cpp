@@ -4,7 +4,7 @@
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Pose2D.h>
 #include <nav_msgs/Odometry.h>
-#include "simulator/simulator_turtlebot.h"
+#include "simulator/simulator_MoveRealRobot.h"
 #include <math.h>
 
 geometry_msgs::Pose2D current_pose;
@@ -33,7 +33,7 @@ void odomCallback(const nav_msgs::OdometryConstPtr& msg)
 }
 
 
-bool move_turtle(simulator::simulator_turtlebot::Request &req, simulator::simulator_turtlebot::Response &res)
+bool move_turtle(simulator::simulator_MoveRealRobot::Request &req, simulator::simulator_MoveRealRobot::Response &res)
 {
     double dist = req.distance;
     double angle = req.theta;//M_PI;//1.5707;
