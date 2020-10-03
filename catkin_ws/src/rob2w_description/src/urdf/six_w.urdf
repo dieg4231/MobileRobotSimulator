@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<robot name="six_w">
+	<link name="base_link">
+		<visual>
+			<origin xyz="0 0 0.03" rpy="0 0 0"/>
+			<geometry>
+				<box size="0.2 0.06 0.05"/>
+			</geometry>
+			<material name="green">
+				<color rgba="0 1 0 0.5"/>
+			</material>
+		</visual>
+	</link>
+
+	<joint	name="left_wheel_joint_connect_1" type="fixed">
+		<origin xyz="0.06 0.035155 0.02155" rpy="0 1.5708 1.5708"/>
+		<parent link="base_link"/>
+		<child link="left_wheel_link_1"/>
+	</joint>
+
+	<link name="left_wheel_link_1">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<cylinder length="0.01889" radius="0.02155"/>
+			</geometry>
+			<material name="black">
+				<color rgba="0 0 0 1"/>
+			</material>
+		</visual>
+	</link>
+	
+	<joint	name="left_wheel_joint_connect_2" type="fixed">
+		<origin xyz="0 0.035155 0.02155" rpy="0 1.5708 1.5708"/>
+		<parent link="base_link"/>
+		<child link="left_wheel_link_2"/>
+	</joint>
+
+	<link name="left_wheel_link_2">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<cylinder length="0.01889" radius="0.02155"/>
+			</geometry>
+			<material name="black">
+				<color rgba="0 0 0 1"/>
+			</material>
+		</visual>
+	</link>
+
+	<joint	name="left_wheel_joint_connect_3" type="fixed">
+		<origin xyz="-0.06 0.035155 0.02155" rpy="0 1.5708 1.5708"/>
+		<parent link="base_link"/>
+		<child link="left_wheel_link_3"/>
+	</joint>
+
+	<link name="left_wheel_link_3">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<cylinder length="0.01889" radius="0.02155"/>
+			</geometry>
+			<material name="black">
+				<color rgba="0 0 0 1"/>
+			</material>
+		</visual>
+	</link>
+
+
+	
+	<joint	name="right_wheel_joint_connect_1" type="fixed">
+		<origin xyz="0.06 -0.035155 0.02155" rpy="0 1.5708 1.5708"/>
+		<parent link="base_link"/>
+		<child link="right_wheel_link_1"/>
+	</joint>
+
+	<link name="right_wheel_link_1">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<cylinder length="0.01889" radius="0.02155"/>
+			</geometry>
+			<material name="black">
+				<color rgba="0 0 0 1"/>
+			</material>
+		</visual>
+	</link>
+
+	<joint	name="right_wheel_joint_connect_2" type="fixed">
+		<origin xyz="0 -0.035155 0.02155" rpy="0 1.5708 1.5708"/>
+		<parent link="base_link"/>
+		<child link="right_wheel_link_2"/>
+	</joint>
+
+	<link name="right_wheel_link_2">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<cylinder length="0.01889" radius="0.02155"/>
+			</geometry>
+			<material name="black">
+				<color rgba="0 0 0 1"/>
+			</material>
+		</visual>
+	</link>
+	<joint	name="right_wheel_joint_connect_3" type="fixed">
+		<origin xyz="-0.06 -0.035155 0.02155" rpy="0 1.5708 1.5708"/>
+		<parent link="base_link"/>
+		<child link="right_wheel_link_3"/>
+	</joint>
+
+	<link name="right_wheel_link_3">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<cylinder length="0.01889" radius="0.02155"/>
+			</geometry>
+			<material name="black"> <color rgba="0 0 0 1"/> </material> </visual>
+	</link>
+
+        <link name="laser_link"/>
+
+        <joint name="laser_joint" type="fixed">
+            <parent link="base_link"/>
+            <child link="laser_link"/>
+
+            <origin xyz="0.06323 0 0.04" rpy="0 0 0"/>
+            <axis xyz="0 0 0" rpy="0 0 0"/>
+        </joint>
+
+</robot>
