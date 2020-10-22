@@ -241,6 +241,10 @@ add_executable(laser_node src/simulator_physics/laser_node.cpp)
 target_link_libraries(laser_node ${catkin_LIBRARIES})
 add_dependencies(laser_node simulator_generate_messages_cpp)
 
+add_executable(light_server src/simulator_physics/light_server.cpp)
+target_link_libraries(light_server ${catkin_LIBRARIES})
+add_dependencies(light_server simulator_generate_messages_cpp)
+
 add_executable(light_node src/simulator_physics/light_node.cpp)
 target_link_libraries(light_node ${catkin_LIBRARIES})
 add_dependencies(light_node simulator_generate_messages_cpp)
