@@ -122,6 +122,9 @@ def ros():
 		msg_params.behavior = parameters[15]
 		msg_params.steps = parameters[16]
 		msg_params.useRealRobot = parameters[16]
+		msg_params.useLidar = parameters[17]
+		msg_params.useSArray = parameters[18]
+
 		pub_params.publish(msg_params)
 
 		x = parameters[0]

@@ -18,6 +18,8 @@ typedef struct parameters_
 	int behavior;
 	int steps;
 	bool useRealRobot;
+	bool useLidar;
+	bool useSArray;
 } parameters;
 
 typedef struct next_position_

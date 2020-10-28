@@ -18,7 +18,7 @@ void light_callback(const std_msgs::Int16MultiArrayConstPtr& msg) {
                    msg->data[7] << ", " <<
                     "] " << endl;
 
-    for(int i=0; i<8; i++) light_sensor[i] = msg->data[i];
+    for(int i=0; i<8; i++) light_sensor[i] = ( msg->data[i]*40 ) / 1024;
 
 }
 

@@ -16,3 +16,5 @@ float32 light_y
 int32 behavior
 int32 steps
 bool useRealRobot
+bool useLidar
+bool useSArray

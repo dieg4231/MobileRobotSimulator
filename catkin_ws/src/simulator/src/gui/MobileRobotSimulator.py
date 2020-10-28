@@ -190,6 +190,20 @@ class MobileRobotSimulator(threading.Thread):
 				parameters.append( True )
 			else:
 				parameters.append( False )
+		try:
+			parameters.append( bool(self.varLidar.get()) )
+		except ValueError:
+			if self.varLidar.get()==1:
+				parameters.append( True )
+			else:
+				parameters.append( False )
+		try:
+			parameters.append( bool(self.varSArray.get()) )
+		except ValueError:
+			if self.varSArray.get()==1:
+				parameters.append( True )
+			else:
+				parameters.append( False )
 
 		return parameters
 
@@ -707,10 +721,42 @@ class MobileRobotSimulator(threading.Thread):
 
 	def convert_from_m_to_pixel(self,m):
 		return m * self.canvasX / self.mapX
+	
+	def use_s_array(self):
+		if self.varSArray.get() :
+			self.varLidar.set(0)
+			self.entryNumSensors.delete ( 0, END )
+			self.entryNumSensors.insert ( 0, '8')
+		else:
+			self.varLidar.set(1)
+			self.entryNumSensors.delete ( 0, END )
+			self.entryNumSensors   .insert ( 0, '20')
+
+	def use_lidar(self):
+		if self.varLidar.get():
+			self.varSArray.set(0)
+			self.entryNumSensors.delete ( 0, END )
+			self.entryNumSensors   .insert ( 0, '20')
+		else:
+			self.varSArray.set(1)
+			self.entryNumSensors.delete ( 0, END )
+			self.entryNumSensors   .insert ( 0, '8')
+
 
 	def use_real_robot(self):
 
 		if self.varTurtleBot.get() :
+			if self.varSArray.get() :
+				self.varLidar.set(0)
+				self.entryNumSensors.delete ( 0, END )
+				self.entryNumSensors.insert ( 0, '8')
+			else:
+				self.varLidar.set(1)
+				self.entryNumSensors.delete ( 0, END )
+				self.entryNumSensors   .insert ( 0, '20')
+			self.checkLidar.configure(state="normal")
+			self.checkSArray.configure(state="normal")
+			
 			subprocess.Popen([self.rospack.get_path('simulator')+'/src/turtlebot/start_rviz_turtlebot.sh'])
 			self.w.delete(self.nodes_image)
 			state='disabled'
@@ -751,6 +797,10 @@ class MobileRobotSimulator(threading.Thread):
 			#self.plot_robot2()
 			
 		else: 
+			self.entryNumSensors.delete ( 0, END )
+			self.entryNumSensors   .insert ( 0, '20')
+			self.checkLidar.configure(state="disabled")
+			self.checkSArray.configure(state="disabled")
 			self.buttonMapLess.configure(state="disabled")
 			self.buttonMapMore.configure(state="disabled")
 			state='normal'
@@ -1471,6 +1521,7 @@ class MobileRobotSimulator(threading.Thread):
 
 		self.buttonMapLess = Button(self.rightMenu ,width = 5, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont ,text = "Zoom Out" ,command = self.mapLess)
 		self.buttonMapMore = Button(self.rightMenu ,width = 5, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont, text = "Zoom In " ,command = self.mapMore)
+
 		
 		##### Rigth menu widgets declaration
 
@@ -1554,7 +1605,11 @@ class MobileRobotSimulator(threading.Thread):
 
 		self.lableTurtleBot = Label(self.rightMenu, text = "Real robot" ,background = self.backgroundColor ,foreground = self.titlesColor ,font = self.headLineFont)
 		self.varTurtleBot   = IntVar()
+		self.varLidar   = IntVar(value=1)
+		self.varSArray   = IntVar()
 		self.checkTurtleBot = Checkbutton(self.rightMenu ,text = 'Use real robot' ,variable = self.varTurtleBot ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_real_robot )
+		self.checkLidar = Checkbutton(self.rightMenu ,text = 'Use lidar' ,variable = self.varLidar ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_lidar )
+		self.checkSArray = Checkbutton(self.rightMenu ,text = 'Use sensors array' ,variable = self.varSArray ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_s_array )
 		
 
 		#### Right menu widgets grid			
@@ -1623,9 +1678,11 @@ class MobileRobotSimulator(threading.Thread):
 
 		self.lableTurtleBot.grid(column = 0 ,row = 17 ,columnspan=2 ,sticky = (N, W) ,padx = 5)
 		self.checkTurtleBot.grid(column = 1 ,row = 18 ,columnspan=2 ,sticky = (N, W) ,padx = 5)
+		self.checkLidar.grid(column = 1 ,row = 19 ,columnspan=2 ,sticky = (N, W) ,padx = 5)
+		self.checkSArray.grid(column = 1 ,row = 20 ,columnspan=2 ,sticky = (N, W) ,padx = 5)
 
-		self.buttonMapLess.grid(column = 1 ,row = 19 ,columnspan=1 ,sticky = (N, W) ,padx = 5)
-		self.buttonMapMore.grid(column = 1 ,row = 19 ,columnspan=1 ,sticky = (N, E) ,padx = 5)
+		#self.buttonMapLess.grid(column = 1 ,row = 19 ,columnspan=1 ,sticky = (N, W) ,padx = 5)
+		#self.buttonMapMore.grid(column = 1 ,row = 19 ,columnspan=1 ,sticky = (N, E) ,padx = 5)
 
 		# buttons
 
@@ -1672,6 +1729,9 @@ class MobileRobotSimulator(threading.Thread):
 
 		self.buttonMapLess.configure(state="disabled")
 		self.buttonMapMore.configure(state="disabled")
+
+		self.checkLidar.configure(state="disabled")
+		self.checkSArray.configure(state="disabled")
 
 
 		

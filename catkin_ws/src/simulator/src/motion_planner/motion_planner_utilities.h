@@ -98,6 +98,8 @@ void parametersCallback(const simulator::Parameters::ConstPtr& paramss)
     params.behavior            = paramss->behavior;
     params.steps               = paramss->steps;
     params.useRealRobot        = paramss->useRealRobot;
+    params.useLidar            = paramss->useLidar;
+    params.useSArray           = paramss->useSArray;
 
 }
 
@@ -365,23 +367,34 @@ void laserCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
     int range_laser;
     int num_sensors;
 
-    num_points = 512;
-    PI = 3.1415926535;
-    range_laser = 360;//240;
-    complete_range = range_laser * PI / 180;
-    K1 = complete_range / num_points;
-    num_sensors = params.laser_num_sensors;
-    ranges = params.laser_range;
-    init_angle = params.laser_origin;
-    inc_angle = ranges / num_sensors;
-    theta = init_angle;
-
-    for(int j = 0, k = 1 ; j < num_sensors; j++, k++)
+    if(params.useLidar)
     {
-        index = int ( ( theta * 256 ) / 1.5707 ) + 256;
-        lasers[j] = float( msg->ranges[index] );
-        theta = k * inc_angle + init_angle;
+        num_points = 512;
+        PI = 3.1415926535;
+        range_laser = 360;//240;
+        complete_range = range_laser * PI / 180;
+        K1 = complete_range / num_points;
+        num_sensors = params.laser_num_sensors;
+        ranges = params.laser_range;
+        init_angle = params.laser_origin;
+        inc_angle = ranges / num_sensors;
+        theta = init_angle;
+
+        for(int j = 0, k = 1 ; j < num_sensors; j++, k++)
+        {
+            index = int ( ( theta * 256 ) / 1.5707 ) + 256;
+            lasers[j] = float( msg->ranges[index] );
+            theta = k * inc_angle + init_angle;
+        }
+    }else
+    {
+        for(int j = 0 ; j < params.laser_num_sensors ; j++)
+        {
+            lasers[j] = float( msg->ranges[j] );
+        }
     }
+    
+
 
 }
 
