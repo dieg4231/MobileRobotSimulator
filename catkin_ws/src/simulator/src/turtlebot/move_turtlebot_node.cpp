@@ -55,6 +55,7 @@ bool move_turtle(simulator::simulator_MoveRealRobot::Request &req, simulator::si
 
     angle_goal = current_pose.theta + angle;
     angle_goal = fmod( angle_goal , M_PI*2 );
+
     if( angle_goal > M_PI )
     {
        angle_goal = -(M_PI - ( angle_goal - M_PI ) );
@@ -66,7 +67,7 @@ bool move_turtle(simulator::simulator_MoveRealRobot::Request &req, simulator::si
 
     printf("        Theta Goal: %f Theta Current: %f  Error: %f \n",angle_goal,current_pose.theta,  fabs(fabs(angle_goal) - fabs(current_pose.theta) )  );
 
-    while(ros::ok() && ( fabs( fabs(angle_goal) - fabs(current_pose.theta) )  > .05 )  )
+    while(ros::ok() && ( fabs( fabs(angle_goal) - fabs(current_pose.theta) )  > .1 )  )
     {
         //geometry_msgs::Twist move;
         move.linear.x = 0.0; //speed value m/s
