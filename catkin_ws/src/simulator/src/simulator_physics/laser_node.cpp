@@ -344,7 +344,12 @@ int main(int argc, char *argv[])
 	
 	actual_world[0] = '\0';
 	
-	char a[200]="/home/pumas/Documents/diego/catkin_ws/src/simulator/src/data/random_2/random_2.wrl";
+	std::string paths = ros::package::getPath("simulator");
+  	
+	char a[200];
+	a[0] ='\0'; 
+	strcat(a,paths.c_str());
+	strcat(a,"/src/data/random_2/random_2.wrl");
 	
 	read_environment(a,0);
 	float   valores1[512];

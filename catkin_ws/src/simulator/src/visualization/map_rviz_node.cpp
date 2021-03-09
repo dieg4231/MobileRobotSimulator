@@ -366,33 +366,35 @@ color.a = 1;
     {
       for(int j = 1; j <= polygons_wrl[i].num_vertex; j++ )
       {
-
-
-
           pt.x = polygons_wrl[i].vertex[j-1].x;
           pt.y = polygons_wrl[i].vertex[j-1].y;
           pt.z = 0;
           marker.points.push_back(pt);
+          marker.colors.push_back(color);
 
           pt.x = polygons_wrl[i].vertex[j].x;
           pt.y = polygons_wrl[i].vertex[j].y;
           pt.z = 0;
           marker.points.push_back(pt);
+          marker.colors.push_back(color);
 
           pt.x = polygons_wrl[i].vertex[j-1].x;
           pt.y = polygons_wrl[i].vertex[j-1].y;
           pt.z = .06;
           marker.points.push_back(pt);
+          marker.colors.push_back(color);
 
           pt.x = polygons_wrl[i].vertex[j].x;
           pt.y = polygons_wrl[i].vertex[j].y;
           pt.z = 0;
           marker.points.push_back(pt);
+          marker.colors.push_back(color);
 
           pt.x = polygons_wrl[i].vertex[j].x;
           pt.y = polygons_wrl[i].vertex[j].y;
           pt.z = .06;
           marker.points.push_back(pt);
+          marker.colors.push_back(color);
 
           pt.x = polygons_wrl[i].vertex[j-1].x;
           pt.y = polygons_wrl[i].vertex[j-1].y;
@@ -405,26 +407,31 @@ color.a = 1;
       pt.y = polygons_wrl[i].vertex[polygons_wrl[i].num_vertex].y;
       pt.z = 0;
       marker.points.push_back(pt);
+      marker.colors.push_back(color);
 
       pt.x = polygons_wrl[i].vertex[0].x;
       pt.y = polygons_wrl[i].vertex[0].y;
       pt.z = 0;
       marker.points.push_back(pt);
+      marker.colors.push_back(color);
 
       pt.x = polygons_wrl[i].vertex[polygons_wrl[i].num_vertex].x;
       pt.y = polygons_wrl[i].vertex[polygons_wrl[i].num_vertex].y;
       pt.z = .06;
       marker.points.push_back(pt);
+      marker.colors.push_back(color);
 
       pt.x = polygons_wrl[i].vertex[0].x;
       pt.y = polygons_wrl[i].vertex[0].y;
       pt.z = 0;
       marker.points.push_back(pt);
+      marker.colors.push_back(color);
 
       pt.x = polygons_wrl[i].vertex[0].x;
       pt.y = polygons_wrl[i].vertex[0].y;
       pt.z = .06;
       marker.points.push_back(pt);
+      marker.colors.push_back(color);
 
       pt.x = polygons_wrl[i].vertex[polygons_wrl[i].num_vertex].x;
       pt.y = polygons_wrl[i].vertex[polygons_wrl[i].num_vertex].y;
