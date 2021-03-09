@@ -24,7 +24,7 @@ git  clone https://github.com/dieg4231/MobileRobotSimulator.git
 ```
 
 
-- Go to folder catkin_ws
+- Go to catkin_ws folder
 
 ```
 cd MobileRobotSimulator/catkin_ws
@@ -46,14 +46,14 @@ catkin_make
 
 ### Run
 
-- The source command can be used to load any functions file into the current shell script or a command prompt, in this case the file catkin_ws/devel/setup.bash, so in the folder catkin_ws execute:
+- The "source" command can be used to load any functions file into the current shell script or a command prompt, in this case the file catkin_ws/devel/setup.bash.  Inside catkin_ws folder execute:
 ```
 source devel/setup.bash
 
 ```
 
 
-- Launch the simulator:
+- Launch simulator:
 
 ```
  roslaunch simulator simulator.launch 
