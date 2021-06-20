@@ -1,0 +1,17 @@
+<launch>
+	<node name="simulator_node" pkg="simulator" type="simulator_node.py" required="true" output="screen" />	
+	<node name="base_node" pkg="simulator" type="base_node" output="screen" />	
+	<node name="laser_node" pkg="simulator" type="laser_node" output="screen" />	
+	<node name="light_server" pkg="simulator" type="light_server"/>
+	<node name="light_node" pkg="simulator" type="light_node" output="screen" />
+	<node name="motion_planner_node" pkg="simulator" type="motion_planner_node" output="screen" />	
+	<node name="find_obj_node" pkg="simulator" type="find_obj_node" output="screen" />	
+	<node name="manipulator_node" pkg="simulator" type="manipulator_node" output="screen" />	
+	
+	<node name="ros_pyclips_node" pkg="clips_ros" type="ros_pyclips_node.py"  output="screen" />	
+	<!--node name="move_turtlebot_node" pkg="simulator" type="move_turtlebot_node"  /-->	
+    <node name="simple_move_node" pkg="simulator" type="simple_move_node" />
+
+	<node pkg="tf" type="static_transform_publisher" name="map" args="0 0 0 0 0 0 1 map link1 100" />
+
+</launch>

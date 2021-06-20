@@ -253,6 +253,10 @@ add_executable(move_turtlebot_node src/turtlebot/move_turtlebot_node.cpp)
 target_link_libraries(move_turtlebot_node ${catkin_LIBRARIES})
 add_dependencies(move_turtlebot_node simulator_generate_messages_cpp)
 
+add_executable(simple_move_node src/turtlebot/simple_move_node.cpp)
+target_link_libraries(simple_move_node ${catkin_LIBRARIES})
+add_dependencies(simple_move_node simulator_generate_messages_cpp)
+
 add_executable(map_rviz_node src/visualization/map_rviz_node.cpp)
 target_link_libraries(map_rviz_node ${catkin_LIBRARIES})
 add_dependencies(map_rviz_node simulator_generate_messages_cpp)
