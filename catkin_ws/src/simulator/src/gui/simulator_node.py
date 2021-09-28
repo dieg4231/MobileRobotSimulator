@@ -3,6 +3,8 @@
 from MobileRobotSimulator import *
 from simulator.srv import *
 from simulator.msg import Parameters
+from simulator.msg import PosesArray
+from simulator.msg import poseCustom
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion 
@@ -33,6 +35,16 @@ def handle_simulator_object_interaction(req):
 	resp.done = gui.handle_simulator_object_interaction(req.grasp,req.name)
 	print(gui.objects_data)
 	return resp
+
+def convertArray2Pose(objects_data):
+	arrayPosesObjs = PosesArray();
+	for obj in objects_data:
+		tmp = poseCustom()
+		tmp.name = obj[0]
+		tmp.x = obj[1]
+		tmp.y = obj[2]
+		arrayPosesObjs.posesArray.append(tmp)
+	return arrayPosesObjs
 
 def update_value(msg):
 	gui.handle_hokuyo(msg.ranges)
@@ -82,6 +94,7 @@ def ros():
 	#rospy.Subscriber('/odom',Odometry, turtle_odometry ,queue_size=1)
 
 	odom_pub = rospy.Publisher("/odom_simul", Odometry, queue_size=50)
+	objPose_pub = rospy.Publisher("/objectsPose", PosesArray, queue_size=5)
 	odom_broadcaster = tf.TransformBroadcaster()
 
 	x = 0.0
@@ -148,6 +161,10 @@ def ros():
 		odom.child_frame_id = "base_link_rob2w"
 		odom.twist.twist = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
 		odom_pub.publish(odom)
+
+
+		objPose_pub.publish(convertArray2Pose(gui.objects_data))		   
+
 
 		rate.sleep()
 

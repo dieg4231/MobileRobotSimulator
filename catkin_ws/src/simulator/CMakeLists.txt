@@ -65,6 +65,8 @@ message(CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS})
 ## Generate messages in the 'msg' folder
  add_message_files(
    FILES
+   poseCustom.msg
+   PosesArray.msg
    Parameters.msg
    Laser_values.msg
  )
@@ -260,6 +262,10 @@ add_dependencies(simple_move_node simulator_generate_messages_cpp)
 add_executable(map_rviz_node src/visualization/map_rviz_node.cpp)
 target_link_libraries(map_rviz_node ${catkin_LIBRARIES})
 add_dependencies(map_rviz_node simulator_generate_messages_cpp)
+
+add_executable(objs_viz_node src/visualization/objs_viz_node.cpp)
+target_link_libraries(objs_viz_node ${catkin_LIBRARIES})
+add_dependencies(objs_viz_node simulator_generate_messages_cpp)
 
 add_executable(find_obj_node src/simulator_physics/find_obj_node.cpp)
 target_link_libraries(find_obj_node ${catkin_LIBRARIES})

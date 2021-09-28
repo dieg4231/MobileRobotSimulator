@@ -293,11 +293,41 @@ int main(int argc ,char **argv)
             
             case 10:
 
-		action_planner(params.robot_x, params.robot_y,params.robot_theta,&movements);
+		          action_planner(params.robot_x, params.robot_y,params.robot_theta,&movements);
 
                 break;
 
+            case 11:
+                movements.twist = 0;
+                movements.advance = .05;
+                if (mini_sm==1)
+                {
 
+                    mini_sm++;
+                }
+                else if(mini_sm==2)
+                {
+                    object_interaction(GRASP,"blockA");
+                    mini_sm++;
+                }
+                else if(mini_sm==3)
+                {
+                    mini_sm++;
+                }
+                else if(mini_sm==4)
+                {
+
+                    mini_sm++;
+                }
+                else if(mini_sm==5)
+                {
+                    mini_sm++;
+                }
+
+                
+                
+
+                break;
 
              default:
                     printf(" ******* SELECTION NO DEFINED *******\n");
