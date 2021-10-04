@@ -1030,6 +1030,10 @@ class MobileRobotSimulator(threading.Thread):
 		if self.grasp_id != False:
 			self.current_object = self.w.create_rectangle(x-10, y -10 , x +10, y +10  ,fill="#9FFF3D",outline="#9FFF3D")
 			self.current_object_name = self.w.create_text(x ,y , fill="#9E4124",font="Calibri 10 bold",text=self.grasp_id)
+			for obj in self.objects_data:
+				if self.grasp_id == obj[0]:
+					obj[1]= (self.robotX*self.mapX)/self.canvasX + (( (float(self.entryRadio.get()))*math.cos(float(self.entryAngle.get()))))
+					obj[2]= ((self.canvasY -self.robotY)*self.mapY)/self.canvasY + (((float(self.entryRadio.get()))*math.sin(   float(self.entryAngle.get()) )))
 		self.w.update()
 
 	def plot_robot2(self):
@@ -1068,6 +1072,10 @@ class MobileRobotSimulator(threading.Thread):
 		if self.grasp_id != False:
 			self.current_object = self.w.create_rectangle(x-10, y -10 , x +10, y +10  ,fill="#9FFF3D",outline="#9FFF3D")
 			self.current_object_name = self.w.create_text(x ,y , fill="#9E4124",font="Calibri 10 bold",text=self.grasp_id)
+			for obj in self.objects_data:
+				if self.grasp_id == obj[0]:
+					obj[1]= (self.robotX*self.mapX)/self.canvasX + (( (float(self.entryRadio.get()))*math.cos(float(self.entryAngle.get()))))
+					obj[2]= ((self.canvasY -self.robotY)*self.mapY)/self.canvasY + (((float(self.entryRadio.get()))*math.sin(   float(self.entryAngle.get()) )))
 		self.w.update()
 		time.sleep(.1)
 		#self.laserColor = aux_color
@@ -1140,7 +1148,10 @@ class MobileRobotSimulator(threading.Thread):
 		if self.grasp_id != False:
 			self.current_object = self.w.create_rectangle(x-10, y -10 , x +10, y +10  ,fill="#9FFF3D",outline="#9FFF3D")
 			self.current_object_name = self.w.create_text(x ,y , fill="#9E4124",font="Calibri 10 bold",text=self.grasp_id)
-
+			for obj in self.objects_data:
+				if self.grasp_id == obj[0]:
+					obj[1]= (self.robotX*self.mapX)/self.canvasX + (( (float(self.entryRadio.get()))*math.cos(float(self.entryAngle.get()))))
+					obj[2]= ((self.canvasY -self.robotY)*self.mapY)/self.canvasY + (((float(self.entryRadio.get()))*math.sin(   float(self.entryAngle.get()) )))
 		self.arrow=self.w.create_polygon( head , outline = self.arrowColor , fill = self.arrowColor , width = 1 )
 		self.w.update()
 

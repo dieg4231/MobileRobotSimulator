@@ -7,6 +7,7 @@ Panels:
         - /Global Options1
         - /Grid1
         - /RobotModel1
+        - /MarkerArray1
       Splitter Ratio: 0.5
     Tree Height: 617
   - Class: rviz/Selection
@@ -137,6 +138,14 @@ Visualization Manager:
         my_namespace: true
       Queue Size: 100
       Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /obj_marker_titles
+      Name: MarkerArray
+      Namespaces:
+        my_namespace: true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 91; 91; 91
@@ -201,5 +210,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 976
-  X: 414
-  Y: 73
+  X: 1075
+  Y: 43

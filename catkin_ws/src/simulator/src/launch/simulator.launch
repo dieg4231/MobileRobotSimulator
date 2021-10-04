@@ -7,7 +7,7 @@
 	<node name="motion_planner_node" pkg="simulator" type="motion_planner_node" output="screen" />	
 	<node name="find_obj_node" pkg="simulator" type="find_obj_node" output="screen" />	
 	<node name="manipulator_node" pkg="simulator" type="manipulator_node" output="screen" />	
-	
+	<node name="objs_viz_node" pkg="simulator" type="objs_viz_node" output="screen" />
 	<node name="ros_pyclips_node" pkg="clips_ros" type="ros_pyclips_node.py"  output="screen" />	
 	<node name="move_turtlebot_node" pkg="simulator" type="move_turtlebot_node"  />	
 

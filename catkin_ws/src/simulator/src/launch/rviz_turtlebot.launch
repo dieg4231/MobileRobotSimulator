@@ -2,5 +2,5 @@
 <launch>
 
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find simulator)src/launch/turtlebot.rviz" />
-
+    
 </launch>
