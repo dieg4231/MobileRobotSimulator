@@ -52,14 +52,14 @@ void paramsCallback(const simulator::PosesArray::ConstPtr& objs)
   aux.lifetime = ros::Duration(.1);
   aux.pose.position.x = objs->posesArray[i].x ;
   aux.pose.position.y = objs->posesArray[i].y;
-  aux.pose.position.z = 0.15;
+  aux.pose.position.z = 0.10;
   aux.pose.orientation.x = 0.0;
   aux.pose.orientation.y = 0.0;
   aux.pose.orientation.z = 0.0;
   aux.pose.orientation.w = 1.0;
   aux.scale.x = .05;
   aux.scale.y = .05;
-  aux.scale.z = .05;
+  aux.scale.z = .03;
   aux.color.a = 1.0; // Don't forget to set the alpha!
   aux.color.r = 0.0;
   aux.color.g = 0.0;
