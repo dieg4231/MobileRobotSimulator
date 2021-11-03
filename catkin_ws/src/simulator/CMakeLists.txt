@@ -274,3 +274,7 @@ add_dependencies(find_obj_node simulator_generate_messages_cpp)
 add_executable(manipulator_node src/simulator_physics/manipulator_node.cpp)
 target_link_libraries(manipulator_node ${catkin_LIBRARIES})
 add_dependencies(manipulator_node simulator_generate_messages_cpp)
+
+add_executable(action_planner_node src/motion_planner/action_planner_node.cpp)
+target_link_libraries(action_planner_node ${catkin_LIBRARIES})
+add_dependencies(action_planner_node simulator_generate_messages_cpp)
