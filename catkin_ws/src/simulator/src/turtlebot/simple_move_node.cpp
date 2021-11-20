@@ -115,7 +115,7 @@ bool simpleMoveCallback(simulator::simulator_MoveRealRobot::Request &req, simula
 				break;
 
 			case SM_GOAL_POSE_ACCEL:
-				cruise_speed += 0.007;
+				cruise_speed += 0.011;
 				get_robot_position_wrt_odom(transformListener, robot_x, robot_y, robot_t);
 				error = sqrt((goal_x - robot_x)*(goal_x - robot_x) + (goal_y - robot_y)*(goal_y - robot_y));
 				std::cout << "error:" << error << std::endl;
@@ -177,7 +177,8 @@ bool simpleMoveCallback(simulator::simulator_MoveRealRobot::Request &req, simula
 					if(!withDistance)
 						state = State::SM_GOAL_POSE_FINISH;
 					else{
-						state = State::SM_GOAL_POSE_ACCEL;
+						state = State::SM_GOAL_POSE_FINISH;
+						//state = State::SM_GOAL_POSE_ACCEL;
 					}
 
 				}else{
