@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   message_generation
   clips_ros
+  joy
 )
 
 
@@ -278,3 +279,6 @@ add_dependencies(manipulator_node simulator_generate_messages_cpp)
 add_executable(action_planner_node src/motion_planner/action_planner_node.cpp)
 target_link_libraries(action_planner_node ${catkin_LIBRARIES})
 add_dependencies(action_planner_node simulator_generate_messages_cpp)
+
+add_executable(joy_teleop_node src/joy_teleop/joy_teleop_node.cpp)
+target_link_libraries(joy_teleop_node ${catkin_LIBRARIES})
