@@ -106,6 +106,7 @@ int main(int argc ,char **argv)
             else
                 q_inputs = quantize_laser(lidar_readings,params.laser_num_sensors,params.laser_value); // function in ~/catkin_ws/src/simulator/src/motion_planner/motion_planner_utilities.h
 
+            //printf("Obstacle->%i", q_inputs);
 
             max_advance = params.robot_max_advance;
             max_turn_angle = params.robot_turn_angle;

@@ -25,6 +25,7 @@ void sm_avoid_obstacles(int obs ,movement *movements  ,int *next_state ,float Ma
  {
 
         case 0:
+        printf("Obstacle: %i", obs);
                 if (obs == 0){
                         // there is not obstacle
                         *movements=generate_output(FORWARD,Mag_Advance,max_twist);
