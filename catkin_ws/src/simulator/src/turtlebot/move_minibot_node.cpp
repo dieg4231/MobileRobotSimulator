@@ -8,12 +8,12 @@ tf::Quaternion q;
 tf::StampedTransform transform;
 tf::TransformListener* transformListener;
 
-#define max_speed 0.13
+#define max_speed 0.12
 #define initial_speed 0.04
 #define angle_tolerancy 0.02
-#define distance_tolerancy 0.001
+#define distance_tolerancy 0.004
 
-float a, b, c, v_top;
+float a, b, c, x, v_top;
 
 enum State{
     SM_INIT,
@@ -23,8 +23,33 @@ enum State{
     SM_ROBOT_FINISH
 };
 
-geometry_msgs::Twist compute_speed(float robot_advance, bool backwards)
+geometry_msgs::Twist compute_speed(float robot_x, float robot_y, float robot_t, float goal_x, float goal_y,float robot_advance, bool backwards)
 {
+    float speed = 3*a*pow(robot_advance, 2) + 2*b*robot_advance + c;
+    speed = max_speed * speed / v_top;
+    if(speed < 0) speed = 0;
+    //std::cout << "speed.->" << speed; 
+
+	float alpha = 1.4;
+	float beta = 12.5;
+	float max_angular = 2.5;
+	
+    //Error calculation
+	float angle_error = 0;
+	if(backwards) angle_error = atan2(robot_y - goal_y, robot_x - goal_x) - robot_t;
+	else angle_error = atan2(goal_y - robot_y, goal_x - robot_x) - robot_t;
+	if(angle_error >   M_PI) angle_error -= 2*M_PI;
+	if(angle_error <= -M_PI) angle_error += 2*M_PI;
+    
+    if(backwards) speed *= -1;
+    
+    geometry_msgs::Twist _speed;
+    _speed.linear.x = speed * exp(-(angle_error * angle_error) / alpha);
+    _speed.linear.y = 0;
+    //_speed.angular.z = 0;
+    _speed.angular.z = max_angular * (2 / (1 + exp(-angle_error / beta)) - 1);
+    return _speed; //*/
+    /*
     float speed = 3*a*pow(robot_advance, 2) + 2*b*robot_advance + c;
     speed = max_speed * speed / v_top;
     //std::cout << "a.->" << a << "\tb.->" << b << "\tc.->" << c << std::endl; 
@@ -36,7 +61,7 @@ geometry_msgs::Twist compute_speed(float robot_advance, bool backwards)
     _speed.linear.x = speed;
     _speed.linear.y = 0;
     _speed.angular.z = 0;
-    return _speed; 
+    return _speed; //*/
 }
 
 geometry_msgs::Twist compute_speed(float goal_angle, float robot_angle)
@@ -83,7 +108,7 @@ void get_goal_position(tf::TransformListener* transformListener, float& robot_x,
 bool simpleMoveCallback(simulator::simulator_MoveRealRobot::Request &req, simulator::simulator_MoveRealRobot::Response &res)
 {
     State state = SM_INIT;
-    ros::Rate rate(30); 
+    ros::Rate rate(50); 
     
     float goal_x, goal_y, goal_t;
     float start_robot_x, start_robot_y;
@@ -92,6 +117,7 @@ bool simpleMoveCallback(simulator::simulator_MoveRealRobot::Request &req, simula
 
     bool goal_reached = false;
     bool with_distance = false;
+    int attempts = 0;
     
     geometry_msgs::Twist twist, stop_robot;
 	stop_robot.linear.x  = 0;
@@ -109,15 +135,17 @@ bool simpleMoveCallback(simulator::simulator_MoveRealRobot::Request &req, simula
                 start_robot_y = robot_y;
                 goal_distance = fabs(req.distance);
                 last_error = goal_distance + distance_tolerancy;
-
+                
+                x = goal_distance;
                 if(goal_distance > distance_tolerancy){
                     float xp_0 = 6*initial_speed / (max_speed +3*initial_speed);
-                    a = (xp_0 - 2)/pow(goal_distance, 2);
-                    b = (3 - 2*xp_0) / (goal_distance); 
+                    a = (xp_0 - 2)/pow(x, 2);
+                    b = (3 - 2*xp_0) / (x); 
                     c = xp_0;
                     float x_inf = - b /(3*a);
                     v_top = 3*a*pow(x_inf, 2) + 2*b*x_inf + c;
                 }
+                attempts = (int)((fabs(req.distance)+0.1)/0.5*60 + fabs(req.theta)/0.5*60);
                 std::cout<<std::endl;
                 std::cout << "goal_distance.->" << goal_distance << std::endl;
                 std::cout<<"-------------------------------"<<std::endl;
@@ -150,14 +178,12 @@ bool simpleMoveCallback(simulator::simulator_MoveRealRobot::Request &req, simula
                             robot_advance = goal_distance - distance_error;
 
 
-                            if(last_error < distance_error && distance_error < goal_distance / 2)
-                            {
-                                std::cout <<"\t\033[1;33mUps! I've exceeded the goal...\033[0m"<< std::endl;
+                            if(last_error < distance_error && distance_error < goal_distance / 2) {
+                                //std::cout <<"\t\033[1;33mUps! I've exceeded the goal...\033[0m"<< std::endl;
                                 state = State::SM_ROBOT_FINISH;
-                                break;
                             }
-                            std::cout<< "\trobot_traveled.->"<<robot_traveled<<"\trobot_advanced.->"<<robot_advance<<"\tdistance_error.->"<<distance_error<<std::endl;
-                            twist = compute_speed(robot_advance, req.distance < 0);
+                            //std::cout<< "\trobot_traveled.->"<<robot_traveled<<"\trobot_advanced.->"<<robot_advance<<"\tdistance_error.->"<<distance_error<<std::endl;
+                            twist = compute_speed(robot_x, robot_y, robot_t, goal_x, goal_y, robot_advance, req.distance < 0);
                             pubCmdVel.publish(twist);
                             last_error = distance_error;
                         }
@@ -165,6 +191,11 @@ bool simpleMoveCallback(simulator::simulator_MoveRealRobot::Request &req, simula
                             state = State::SM_ROBOT_FINISH;
                     }
                 }
+				/*if(--attempts <= 0)
+                {
+					state = State::SM_ROBOT_FINISH;
+                    std::cout << "\t\033[1;33mUps! I've exceeded the attempts...\033[0m" << std::endl;
+                }//*/
             break;
 
             case SM_ROBOT_CORRECT_ANGLE:
@@ -186,8 +217,8 @@ bool simpleMoveCallback(simulator::simulator_MoveRealRobot::Request &req, simula
             break;
 
             case SM_ROBOT_FINISH:
-                std::cout << "SM_ROBOT_FINISH" << std::endl;
-                //std::cout << "SimpleMove.->Successful moved with dist=" << req.distance << " angle=" << req.theta << std::endl;
+                //std::cout << "SM_ROBOT_FINISH" << std::endl;
+                std::cout << "SimpleMove.->Successful moved with dist=" << req.distance << " angle=" << req.theta << std::endl;
                 goal_reached = true;
                 pubCmdVel.publish(stop_robot);
             break;
@@ -226,7 +257,6 @@ int main(int argc, char ** argv){
 		return -1;
     }
     
-    std::cout<<"Waiting for petition..."<<std::endl;
 	while(ros::ok()){
     
 		ros::spinOnce();

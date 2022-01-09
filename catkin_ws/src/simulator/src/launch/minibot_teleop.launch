@@ -23,7 +23,7 @@
  	<!-- Axes -->
 	<param name="axis_linear" value="1" type="int"/>
 	<param name="axis_angular" value="3" type="int"/>
-	<param name="scale_linear" value="0.15" type="double"/>
+	<param name="scale_linear" value="0.14" type="double"/>
 	<param name="scale_angular" value="2.5" type="double"/>
   	<node pkg="simulator" type="joy_teleop_node" name="joy_teleop_node"/>
 
