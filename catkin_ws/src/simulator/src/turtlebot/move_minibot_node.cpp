@@ -191,7 +191,7 @@ bool simpleMoveCallback(simulator::simulator_MoveRealRobot::Request &req, simula
                             state = State::SM_ROBOT_FINISH;
                     }
                 }
-				/*if(--attempts <= 0)
+				if(--attempts <= 0)
                 {
 					state = State::SM_ROBOT_FINISH;
                     std::cout << "\t\033[1;33mUps! I've exceeded the attempts...\033[0m" << std::endl;
