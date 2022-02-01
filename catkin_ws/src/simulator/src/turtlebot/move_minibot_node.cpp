@@ -145,7 +145,7 @@ bool simpleMoveCallback(simulator::simulator_MoveRealRobot::Request &req, simula
                     float x_inf = - b /(3*a);
                     v_top = 3*a*pow(x_inf, 2) + 2*b*x_inf + c;
                 }
-                attempts = (int)((fabs(req.distance)+0.1)/0.5*60 + fabs(req.theta)/0.5*60);
+                attempts = (int)((fabs(req.distance)+0.1)/0.5*400 + fabs(req.theta)/0.5*60);
                 std::cout<<std::endl;
                 std::cout << "goal_distance.->" << goal_distance << std::endl;
                 std::cout<<"-------------------------------"<<std::endl;
