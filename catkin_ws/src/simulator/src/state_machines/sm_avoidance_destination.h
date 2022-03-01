@@ -12,7 +12,7 @@
 
 
 
-#define THRESHOLD 20
+#define THRESHOLD 31
 
 // State Machine 
 int sm_avoidance_destination(float intensity, int  dest,int obs ,movement *movements  ,int *next_state ,float Mag_Advance ,float max_twist)

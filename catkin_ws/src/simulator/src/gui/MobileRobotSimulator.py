@@ -726,7 +726,7 @@ class MobileRobotSimulator(threading.Thread):
 		if self.varSArray.get() :
 			self.varLidar.set(0)
 			self.entryNumSensors.delete ( 0, END )
-			self.entryNumSensors.insert ( 0, '8')
+			self.entryNumSensors.insert ( 0, '3')
 		else:
 			self.varLidar.set(1)
 			self.entryNumSensors.delete ( 0, END )
@@ -752,8 +752,17 @@ class MobileRobotSimulator(threading.Thread):
 				self.entryNumSensors.insert ( 0, '8')
 			else:
 				self.varLidar.set(1)
-				self.entryNumSensors.delete ( 0, END )
-				self.entryNumSensors   .insert ( 0, '20')
+				self.entryNumSensors.delete( 0, END )
+				self.entryNumSensors.insert( 0, '3')
+				self.entryOrigin.delete( 0, END)
+				self.entryOrigin.insert( 0, '-0.7853')
+				self.entryRange.delete( 0, END)
+				self.entryRange.insert( 0, '1.5708')
+				self.entryAdvance.delete( 0, END)
+				self.entryAdvance.insert( 0, '0.08')
+				self.entryValue.delete( 0, END)
+				self.entryValue.insert( 0, '0.14')
+
 			self.checkLidar.configure(state="normal")
 			self.checkSArray.configure(state="normal")
 			

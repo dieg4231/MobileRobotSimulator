@@ -9,8 +9,7 @@
 	<node name="manipulator_node" pkg="simulator" type="manipulator_node" output="screen" />	
 	
 	<!--node name="ros_pyclips_node" pkg="clips_ros" type="ros_pyclips_node.py"  output="screen" /-->	
-	<!--node name="move_turtlebot_node" pkg="simulator" type="move_turtlebot_node"  /-->	
-	<node name="simple_move_node" pkg="simulator" type="simple_move_node" />
+	<node name="move_turtlebot_node" pkg="simulator" type="move_turtlebot_node"/>
 
 	<node pkg="tf" type="static_transform_publisher" name="map" args="0 0 0 0 0 0 1 map link1 100" />
 </launch>

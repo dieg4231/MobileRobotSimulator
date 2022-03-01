@@ -10,7 +10,7 @@
  *                                                      *
  ********************************************************/
 
-#define THRESHOLD_DEST 25.0
+#define THRESHOLD_DEST 31.0
 
 
 // State Machine 

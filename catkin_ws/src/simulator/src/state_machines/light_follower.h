@@ -13,7 +13,7 @@
 ************************************************/
 
 
-#define THRESHOLD_FOLLOWER 30
+#define THRESHOLD_FOLLOWER 31
  
 
 int light_follower(float intensity,float *light_values,movement *movements,float max_advance, float max_turn_angle)
