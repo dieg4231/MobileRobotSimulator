@@ -759,9 +759,11 @@ class MobileRobotSimulator(threading.Thread):
 				self.entryRange.delete( 0, END)
 				self.entryRange.insert( 0, '1.5708')
 				self.entryAdvance.delete( 0, END)
-				self.entryAdvance.insert( 0, '0.08')
+				self.entryAdvance.insert( 0, '0.03')
 				self.entryValue.delete( 0, END)
-				self.entryValue.insert( 0, '0.14')
+				self.entryValue.insert( 0, '0.17')
+				self.entryRadio.delete(0, END)
+				self.entryRadio.insert(0, '0.05')
 
 			self.checkLidar.configure(state="normal")
 			self.checkSArray.configure(state="normal")
