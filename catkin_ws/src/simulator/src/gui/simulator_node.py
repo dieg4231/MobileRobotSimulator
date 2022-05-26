@@ -12,6 +12,7 @@ import tf
 import time
 import rospy
 from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
+from std_msgs.msg import Bool
 
 gui=MobileRobotSimulator()
 
@@ -107,8 +108,10 @@ def ros():
 	current_time = rospy.Time.now()
 	last_time = rospy.Time.now()
 
+	i = 0
 
 	pub_params = rospy.Publisher('simulator_parameters_pub', Parameters, queue_size = 0)
+	pub_lights = rospy.Publisher('/turn_light', Bool, queue_size=1)
 	#rospy.Subscriber("simulator_laser_pub", Laser_values, callback)
 
 	msg_params = Parameters()
@@ -164,8 +167,11 @@ def ros():
 
 
 		objPose_pub.publish(convertArray2Pose(gui.objects_data))		   
-
-
+		
+		msg_light = Bool()
+		msg_light.data = parameters[19]
+		pub_lights.publish(msg_light)
+		
 		rate.sleep()
 
 		#print(gui.stopped)

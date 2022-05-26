@@ -204,7 +204,13 @@ class MobileRobotSimulator(threading.Thread):
 				parameters.append( True )
 			else:
 				parameters.append( False )
-
+		try:
+			parameters.append( bool(self.varLight.get()) )
+		except ValueError:
+			if self.varLight.get()==1:
+				parameters.append( True )
+			else:
+				parameters.append( False )
 		return parameters
 
 	
@@ -852,8 +858,11 @@ class MobileRobotSimulator(threading.Thread):
 		self.buttonSetZero.configure(state=state) 
 		self.buttonPlotTopological.configure(state=state)
 
-
-
+	def turn_light(self):
+		'''if self.varLight.get():
+			print("Turn on light")
+		else:
+			print("Turn off light")'''
 
 	#####################################################################
 	#####################################################################
@@ -1629,10 +1638,11 @@ class MobileRobotSimulator(threading.Thread):
 		self.varTurtleBot   = IntVar()
 		self.varLidar   = IntVar(value=1)
 		self.varSArray   = IntVar()
+		self.varLight  = IntVar()
 		self.checkTurtleBot = Checkbutton(self.rightMenu ,text = 'Use real robot' ,variable = self.varTurtleBot ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_real_robot )
 		self.checkLidar = Checkbutton(self.rightMenu ,text = 'Use lidar' ,variable = self.varLidar ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_lidar )
 		self.checkSArray = Checkbutton(self.rightMenu ,text = 'Use sensors array' ,variable = self.varSArray ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_s_array )
-		
+		self.checkLight = Checkbutton(self.rightMenu, text = 'Turn on light', variable = self.varLight, onvalue = 1, offvalue = 0, background = self.backgroundColor, command = self.turn_light)
 
 		#### Right menu widgets grid			
 
@@ -1702,6 +1712,7 @@ class MobileRobotSimulator(threading.Thread):
 		self.checkTurtleBot.grid(column = 1 ,row = 18 ,columnspan=2 ,sticky = (N, W) ,padx = 5)
 		self.checkLidar.grid(column = 1 ,row = 19 ,columnspan=2 ,sticky = (N, W) ,padx = 5)
 		self.checkSArray.grid(column = 1 ,row = 20 ,columnspan=2 ,sticky = (N, W) ,padx = 5)
+		self.checkLight.grid(column = 1, row = 22, columnspan=2, sticky = (N, W), padx = 5)
 
 		#self.buttonMapLess.grid(column = 1 ,row = 19 ,columnspan=1 ,sticky = (N, W) ,padx = 5)
 		#self.buttonMapMore.grid(column = 1 ,row = 19 ,columnspan=1 ,sticky = (N, E) ,padx = 5)
