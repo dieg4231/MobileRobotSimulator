@@ -18,3 +18,4 @@ int32 steps
 bool useRealRobot
 bool useLidar
 bool useSArray
+bool[6] realLights

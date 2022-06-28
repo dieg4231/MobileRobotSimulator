@@ -205,9 +205,16 @@ class MobileRobotSimulator(threading.Thread):
 			else:
 				parameters.append( False )
 		try:
-			parameters.append( bool(self.varLight.get()) )
+			parameters.append( bool(self.varLight1.get()) )
 		except ValueError:
-			if self.varLight.get()==1:
+			if self.varLight1.get()==1:
+				parameters.append( True )
+			else:
+				parameters.append( False )
+		try:
+			parameters.append( bool(self.varLight2.get()) )
+		except ValueError:
+			if self.varLight2.get()==1:
 				parameters.append( True )
 			else:
 				parameters.append( False )
@@ -859,11 +866,15 @@ class MobileRobotSimulator(threading.Thread):
 		self.buttonPlotTopological.configure(state=state)
 
 	def turn_light(self):
-		'''if self.varLight.get():
-			print("Turn on light")
+		'''if self.varLight1.get():
+			print("Turn on light 1")
 		else:
-			print("Turn off light")'''
-
+			print("Turn off light 1")
+		if self.varLight2.get():
+			print("Turn on light 2")
+		else:
+			print("Turn off light 2")
+		print("---------------")'''
 	#####################################################################
 	#####################################################################
 	#####################################################################
@@ -1638,11 +1649,13 @@ class MobileRobotSimulator(threading.Thread):
 		self.varTurtleBot   = IntVar()
 		self.varLidar   = IntVar(value=1)
 		self.varSArray   = IntVar()
-		self.varLight  = IntVar()
+		self.varLight1  = IntVar()
+		self.varLight2  = IntVar()
 		self.checkTurtleBot = Checkbutton(self.rightMenu ,text = 'Use real robot' ,variable = self.varTurtleBot ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_real_robot )
 		self.checkLidar = Checkbutton(self.rightMenu ,text = 'Use lidar' ,variable = self.varLidar ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_lidar )
 		self.checkSArray = Checkbutton(self.rightMenu ,text = 'Use sensors array' ,variable = self.varSArray ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_s_array )
-		self.checkLight = Checkbutton(self.rightMenu, text = 'Turn on light', variable = self.varLight, onvalue = 1, offvalue = 0, background = self.backgroundColor, command = self.turn_light)
+		self.checkLight1 = Checkbutton(self.rightMenu, text = 'Turn on real light 1', variable = self.varLight1, onvalue = 1, offvalue = 0, background = self.backgroundColor, command = self.turn_light)
+		self.checkLight2 = Checkbutton(self.rightMenu, text = 'Turn on real light 2', variable = self.varLight2, onvalue = 1, offvalue = 0, background = self.backgroundColor, command = self.turn_light)
 
 		#### Right menu widgets grid			
 
@@ -1712,7 +1725,8 @@ class MobileRobotSimulator(threading.Thread):
 		self.checkTurtleBot.grid(column = 1 ,row = 18 ,columnspan=2 ,sticky = (N, W) ,padx = 5)
 		self.checkLidar.grid(column = 1 ,row = 19 ,columnspan=2 ,sticky = (N, W) ,padx = 5)
 		self.checkSArray.grid(column = 1 ,row = 20 ,columnspan=2 ,sticky = (N, W) ,padx = 5)
-		self.checkLight.grid(column = 1, row = 22, columnspan=2, sticky = (N, W), padx = 5)
+		self.checkLight1.grid(column = 1, row = 22, columnspan=2, sticky = (N, W), padx = 5)
+		self.checkLight2.grid(column = 1, row = 23, columnspan=2, sticky = (N, W), padx = 5)
 
 		#self.buttonMapLess.grid(column = 1 ,row = 19 ,columnspan=1 ,sticky = (N, W) ,padx = 5)
 		#self.buttonMapMore.grid(column = 1 ,row = 19 ,columnspan=1 ,sticky = (N, E) ,padx = 5)

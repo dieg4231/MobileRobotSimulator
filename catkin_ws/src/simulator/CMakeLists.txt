@@ -49,7 +49,7 @@ message(CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS})
    simulator_object_interaction.srv
    simulator_find_obj.srv
    simulator_manipulator.srv
-
+   auto_charge.srv
  )
 
 ## Generate added messages and services with any dependencies listed here
@@ -102,10 +102,6 @@ add_executable(move_turtlebot_node src/turtlebot/move_turtlebot_node.cpp)
 target_link_libraries(move_turtlebot_node ${catkin_LIBRARIES})
 add_dependencies(move_turtlebot_node simulator_generate_messages_cpp)
 
-add_executable(simple_move_node src/turtlebot/simple_move_node.cpp)
-target_link_libraries(simple_move_node ${catkin_LIBRARIES})
-add_dependencies(simple_move_node simulator_generate_messages_cpp)
-
 add_executable(move_minibot_node src/turtlebot/move_minibot_node.cpp)
 target_link_libraries(move_minibot_node ${catkin_LIBRARIES})
 add_dependencies(move_minibot_node simulator_generate_messages_cpp)
@@ -129,6 +125,10 @@ add_dependencies(manipulator_node simulator_generate_messages_cpp)
 add_executable(action_planner_node src/motion_planner/action_planner_node.cpp)
 target_link_libraries(action_planner_node ${catkin_LIBRARIES})
 add_dependencies(action_planner_node simulator_generate_messages_cpp)
+
+add_executable(auto_charge_server src/motion_planner/auto_charge_server.cpp)
+target_link_libraries(auto_charge_server ${catkin_LIBRARIES})
+add_dependencies(auto_charge_server simulator_generate_messages_cpp)
 
 add_executable(joy_teleop_node src/joy_teleop/joy_teleop_node.cpp)
 target_link_libraries(joy_teleop_node ${catkin_LIBRARIES})

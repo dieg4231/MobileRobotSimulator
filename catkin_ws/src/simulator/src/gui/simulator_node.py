@@ -12,7 +12,7 @@ import tf
 import time
 import rospy
 from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
-from std_msgs.msg import Bool
+from std_msgs.msg import Int8MultiArray
 
 gui=MobileRobotSimulator()
 
@@ -82,8 +82,14 @@ def handle_print_graph(req):
 	resp.success=1;
 	return resp
 
-def ros():
+def turn_lights(lights_array):
 
+	lights = Int8MultiArray()
+	lights.data = lights_array
+	lights_pub.publish(lights)
+	
+def ros():
+	global lights_pub
 	rospy.init_node('simulator_gui_node')
 	a = rospy.Service('simulator_robot_step', simulator_robot_step, handle_robot_step)
 	b = rospy.Service('simulator_print_graph', simulator_algorithm_result, handle_print_graph)
@@ -97,7 +103,8 @@ def ros():
 	odom_pub = rospy.Publisher("/odom_simul", Odometry, queue_size=50)
 	objPose_pub = rospy.Publisher("/objectsPose", PosesArray, queue_size=5)
 	odom_broadcaster = tf.TransformBroadcaster()
-
+	lights_pub = rospy.Publisher("/turn_lights", Int8MultiArray, queue_size=5)
+	
 	x = 0.0
 	y = 0.0
 	th = 0.0
@@ -108,14 +115,13 @@ def ros():
 	current_time = rospy.Time.now()
 	last_time = rospy.Time.now()
 
-	i = 0
+	lights_array = [0, 0, 0, 0, 0, 0]
 
 	pub_params = rospy.Publisher('simulator_parameters_pub', Parameters, queue_size = 0)
-	pub_lights = rospy.Publisher('/turn_light', Bool, queue_size=1)
 	#rospy.Subscriber("simulator_laser_pub", Laser_values, callback)
 
+	
 	msg_params = Parameters()
-
 	rate = rospy.Rate(100)
 
 	while not gui.stopped:
@@ -140,6 +146,7 @@ def ros():
 		msg_params.useRealRobot = parameters[16]
 		msg_params.useLidar = parameters[17]
 		msg_params.useSArray = parameters[18]
+		msg_params.realLights = [parameters[19], parameters[20], 0, 0, 0, 0]
 
 		pub_params.publish(msg_params)
 
@@ -168,19 +175,20 @@ def ros():
 
 		objPose_pub.publish(convertArray2Pose(gui.objects_data))		   
 		
-		msg_light = Bool()
-		msg_light.data = parameters[19]
-		pub_lights.publish(msg_light)
-		
+		if lights_array != [parameters[19], parameters[20], 0, 0, 0, 0]:
+			lights_array = [parameters[19], parameters[20], 0, 0, 0, 0]
+			turn_lights(lights_array)
+
 		rate.sleep()
-
 		#print(gui.stopped)
-
+	
 	for _ in range(20):
 		msg_params.run = False
 		pub_params.publish(msg_params)
 		rate.sleep()
 
+
 if __name__ == "__main__":
 	time.sleep(5) #
 	ros()
+	turn_lights([0, 0, 0, 0, 0, 0])
