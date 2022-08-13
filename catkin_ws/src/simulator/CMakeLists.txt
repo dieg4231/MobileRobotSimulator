@@ -50,6 +50,7 @@ message(CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS})
    simulator_find_obj.srv
    simulator_manipulator.srv
    auto_charge.srv
+   return_home.srv
  )
 
 ## Generate added messages and services with any dependencies listed here
@@ -129,6 +130,10 @@ add_dependencies(action_planner_node simulator_generate_messages_cpp)
 add_executable(auto_charge_server src/motion_planner/auto_charge_server.cpp)
 target_link_libraries(auto_charge_server ${catkin_LIBRARIES})
 add_dependencies(auto_charge_server simulator_generate_messages_cpp)
+
+add_executable(return_home_server src/motion_planner/return_home_server.cpp)
+target_link_libraries(return_home_server ${catkin_LIBRARIES})
+add_dependencies(return_home_server simulator_generate_messages_cpp)
 
 add_executable(joy_teleop_node src/joy_teleop/joy_teleop_node.cpp)
 target_link_libraries(joy_teleop_node ${catkin_LIBRARIES})
