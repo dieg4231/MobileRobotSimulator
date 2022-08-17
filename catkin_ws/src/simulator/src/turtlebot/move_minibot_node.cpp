@@ -8,12 +8,23 @@ tf::Quaternion q;
 tf::StampedTransform transform;
 tf::TransformListener* transformListener;
 
-#define max_speed 0.12
-#define initial_speed 0.04
-#define angle_tolerancy 0.02
-#define distance_tolerancy 0.004
 
 float a, b, c, x, v_top;
+
+//PARAMETERS FOR ROBOT'S MOVEMENTS
+float max_speed = 0.12;
+float initial_speed = 0.04;
+float angle_tolerancy = 0.02;
+float distance_tolerancy = 0.004;
+
+//PARAMETERS FOR LINEAR MOVEMENTS
+float linear_alpha = 1.4;
+float linear_beta = 12.5;
+float linear_max_angular = 2.5;
+
+//PARAMETERS FOR ANGULAR MOVEMENTS
+float angular_alpha = 0.45;
+float angular_max_angular = 2.5;
 
 enum State{
     SM_INIT,
@@ -23,17 +34,65 @@ enum State{
     SM_ROBOT_FINISH
 };
 
+void load_parameters()
+{
+    if(!ros::param::get("/max_speed", max_speed)) {
+        ROS_ERROR("/max_speed param did not loaded, check file: ~/MobileRobotSimulator/catkin_ws/src/simulator/src/data/control/control.yaml"); 
+        std::cout << "Loading default value for max_speed->" << max_speed << std::endl;
+    } else { std::cout << "\tmax_speed->" << max_speed << std::endl; }
+    
+    if(!ros::param::get("/initial_speed", initial_speed)){
+        ROS_ERROR("/initial_speed param did not loaded, check file: ~/MobileRobotSimulator/catkin_ws/src/simulator/src/data/control/control.yaml"); 
+        std::cout << "Loading default value for initial_speed->" << initial_speed << std::endl;
+    } else { std::cout << "\tinitial_speed->" << initial_speed << std::endl; }
+   
+    if(!ros::param::get("/angle_tolerancy", angle_tolerancy)) {
+        ROS_ERROR("/angle_tolerancy param did not loaded, check file: ~/MobileRobotSimulator/catkin_ws/src/simulator/src/data/control/control.yaml"); 
+        std::cout << "Loading default value for angle_tolerancy->" << angle_tolerancy << std::endl;
+    } else { std::cout << "\tangle_tolerancy->" << angle_tolerancy << std::endl; }
+    
+    if(!ros::param::get("/distance_tolerancy", distance_tolerancy)) {
+        ROS_ERROR("/distance_tolerancy param did not loaded, check file: ~/MobileRobotSimulator/catkin_ws/src/simulator/src/data/control/control.yaml"); 
+        std::cout << "Loading default value for distance_tolerancy->" << distance_tolerancy << std::endl;
+    } else { std::cout << "\tdistance_tolerancy->" << distance_tolerancy << std::endl; }
+  
+    if(!ros::param::get("/linear_alpha", linear_alpha)) {
+        ROS_ERROR("/linear_alpha param did not loaded, check file: ~/MobileRobotSimulator/catkin_ws/src/simulator/src/data/control/control.yaml"); 
+        std::cout << "Loading default value for linear_alpha->" << linear_alpha << std::endl;
+    } else { std::cout << "\tlinear_alpha->" << linear_alpha << std::endl; }
+    
+    if(!ros::param::get("/linear_beta", linear_beta)) {
+        ROS_ERROR("/linear_beta param did not loaded, check file: ~/MobileRobotSimulator/catkin_ws/src/simulator/src/data/control/control.yaml"); 
+        std::cout << "Loading default value for linear_beta->" << linear_beta << std::endl;
+    } else { std::cout << "\tlinear_beta->" << linear_beta << std::endl; }
+
+    if(!ros::param::get("/linear_max_angular", linear_max_angular)) {
+        ROS_ERROR("/linear_max_angular param did not loaded, check file: ~/MobileRobotSimulator/catkin_ws/src/simulator/src/data/control/control.yaml"); 
+        std::cout << "Loading default value for /linear_max_angular->" << linear_max_angular << std::endl;
+    } else { std::cout << "\tlinear_max_angular->" <<linear_max_angular << std::endl; }
+   
+    if(!ros::param::get("/angular_alpha", angular_alpha)) {
+        ROS_ERROR("/angular_alpha param did not loaded, check file: ~/MobileRobotSimulator/catkin_ws/src/simulator/src/data/control/control.yaml"); 
+        std::cout << "Loading default value for angular_alpha->" << angular_alpha << std::endl;
+    } else { std::cout << "\tangular_alpha->" << angular_alpha << std::endl; }
+    
+    if(!ros::param::get("/angular_max_angular", angular_max_angular)) {
+        ROS_ERROR("/angular_max_angular param did not loaded, check file: ~/MobileRobotSimulator/catkin_ws/src/simulator/src/data/control/control.yaml"); 
+        std::cout << "Loading default value for /angular_max_angular->" << angular_max_angular << std::endl;
+    } else { std::cout << "\tangular_max_angular->" <<angular_max_angular << std::endl; }
+}
+
 geometry_msgs::Twist compute_speed(float robot_x, float robot_y, float robot_t, float goal_x, float goal_y,float robot_advance, bool backwards)
 {
     float speed = 3*a*pow(robot_advance, 2) + 2*b*robot_advance + c;
     speed = max_speed * speed / v_top;
     if(speed < 0) speed = 0;
-    //std::cout << "speed.->" << speed; 
 
-	float alpha = 1.4;
-	float beta = 12.5;
-	float max_angular = 2.5;
-	
+    //PARAMETERS FOR LINEAR MOVEMENTS
+	float alpha = linear_alpha;
+	float beta  =  linear_beta;
+	float max_angular = linear_max_angular;
+
     //Error calculation
 	float angle_error = 0;
 	if(backwards) angle_error = atan2(robot_y - goal_y, robot_x - goal_x) - robot_t;
@@ -46,22 +105,9 @@ geometry_msgs::Twist compute_speed(float robot_x, float robot_y, float robot_t, 
     geometry_msgs::Twist _speed;
     _speed.linear.x = speed * exp(-(angle_error * angle_error) / alpha);
     _speed.linear.y = 0;
-    //_speed.angular.z = 0;
     _speed.angular.z = max_angular * (2 / (1 + exp(-angle_error / beta)) - 1);
-    return _speed; //*/
-    /*
-    float speed = 3*a*pow(robot_advance, 2) + 2*b*robot_advance + c;
-    speed = max_speed * speed / v_top;
-    //std::cout << "a.->" << a << "\tb.->" << b << "\tc.->" << c << std::endl; 
-    if(speed < 0) speed = 0;
-    if(backwards) speed = -speed;
-    
-    std::cout << "speed.->" << speed; 
-    geometry_msgs::Twist _speed;
-    _speed.linear.x = speed;
-    _speed.linear.y = 0;
-    _speed.angular.z = 0;
-    return _speed; //*/
+    return _speed; 
+
 }
 
 geometry_msgs::Twist compute_speed(float goal_angle, float robot_angle)
@@ -70,8 +116,9 @@ geometry_msgs::Twist compute_speed(float goal_angle, float robot_angle)
     if(angle_error >   M_PI) angle_error -= 2*M_PI;
     if(angle_error <= -M_PI) angle_error += 2*M_PI;
     
-    float alpha = 0.45;
-    float max_angular = 2.5;
+    //PARAMETER FOR ANGULAR MOVEMENTS
+    float alpha = angular_alpha;
+    float max_angular = angular_alpha;
 
     geometry_msgs::Twist speed;
 	speed.linear.x  = 0;
@@ -212,7 +259,8 @@ bool simpleMoveCallback(simulator::simulator_MoveRealRobot::Request &req, simula
                 }
                 else {
                     twist = compute_speed(goal_t, robot_t);
-                    pubCmdVel.publish(twist);
+                    pubCmdVel.publish(twist);    //_speed.angular.z = 0;
+
                 }
             break;
 
@@ -244,6 +292,7 @@ int main(int argc, char ** argv){
 	ros::NodeHandle nh;
 	ros::Rate rate(30);
 
+	load_parameters();
 	ros::ServiceServer simpleMoveService = nh.advertiseService("simulator_move_RealRobot", simpleMoveCallback);
     pubCmdVel = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
 	

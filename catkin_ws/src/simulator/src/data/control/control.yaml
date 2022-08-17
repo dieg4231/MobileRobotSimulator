@@ -1,0 +1,14 @@
+#PARAMETERS FOR ROBOT'S SPEED
+max_speed: 0.12
+initial_speed: 0.04
+angle_tolerancy: 0.02
+distance_tolerancy: 0.004
+
+#PARAMETERS FOR LINEAR ADVANCE
+linear_alpha: 1.4
+linear_beta: 12.5
+linear_max_angular: 2.5
+
+#PARAMETERS FOR ANGULAR ADVANCE
+angular_alpha: 0.45
+angular_max_angular: 2.5
