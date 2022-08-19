@@ -35,8 +35,8 @@ class MobileRobotSimulator(threading.Thread):
 		self.mapX = 0 
 		self.mapY = 0
 		# canvas size in pixels
-		self.canvasX= 600
-		self.canvasY= 600
+		self.canvasX= 400
+		self.canvasY= 500
 		# robot position and angle
 		self.robot_theta=0
 		self.robotX=-100
@@ -764,7 +764,8 @@ class MobileRobotSimulator(threading.Thread):
 				self.entryNumSensors.delete ( 0, END )
 				self.entryNumSensors.insert ( 0, '8')
 			else:
-				self.varLidar.set(1)
+				self.varLidar.set(0)
+				self.varSArray.set(1)
 				self.entryNumSensors.delete( 0, END )
 				self.entryNumSensors.insert( 0, '3')
 				self.entryOrigin.delete( 0, END)
@@ -1557,7 +1558,7 @@ class MobileRobotSimulator(threading.Thread):
 		self.entryLightX = Label(self.rightMenu ,text = "Click Right" ,background = self.backgroundColor ,font = self.lineFont ,justify='center')
 		self.entryLightY = Label(self.rightMenu ,text = "Click Right" ,background = self.backgroundColor ,font = self.lineFont ,justify='center')
 		self.entryStepsExcec = Label(self.rightMenu ,text = "0" ,background = self.backgroundColor ,font = self.lineFont ,justify='center')
-		self.entryFile.insert ( 0, 'random_2' )
+		self.entryFile.insert ( 0, 'empty' )
 		self.entrySteps.insert( 0, '100' )
 		self.entryBehavior.insert ( 0, '4' )
 
@@ -1615,7 +1616,7 @@ class MobileRobotSimulator(threading.Thread):
 		self.entryTurnAngle .insert ( 0, '0.7857' )
 
 		self.labelVelocity = Label(self.rightMenu ,text = "Execution velocity:"        ,background = self.backgroundColor ,font = self.lineFont)
-		self.sliderVelocity =Scale(self.rightMenu, from_=1, to=3, orient=HORIZONTAL ,length=200 ,background = self.backgroundColor ,font = self.lineFont)
+		self.sliderVelocity =Scale(self.rightMenu, from_=1, to=3, orient=HORIZONTAL ,length=150 ,background = self.backgroundColor ,font = self.lineFont)
 		
 
 		# Sensors
@@ -1644,6 +1645,9 @@ class MobileRobotSimulator(threading.Thread):
 		self.buttonLastSimulation= Button(self.rightMenu ,width = 20, text = "Run last simulation" ,state="disabled", foreground = self.buttonFontColor ,background = self.buttonColor , font = self.buttonFont ,command = self.rewindF  )
 		self.buttonRunSimulation = Button(self.rightMenu ,width = 20, text = "Run simulation", foreground = self.buttonFontColor ,background = self.buttonColor,font = self.buttonFont,command = lambda: self.s_t_simulation(True) )
 		self.buttonStop          = Button(self.rightMenu ,width = 20, text = "Stop", foreground = self.buttonFontColor ,background = self.buttonColor, font = self.buttonFont, command = lambda: self.s_t_simulation(False) )
+		self.labelBattery = Label(self.rightMenu ,text = "Battery Charge:", background = self.backgroundColor ,font = self.lineFont)
+		self.batteryBar = ttk.Progressbar(self.rightMenu, orient=HORIZONTAL, mode='determinate', length=150)
+		self.batteryBar['value'] = 0
 
 		self.lableTurtleBot = Label(self.rightMenu, text = "Real robot" ,background = self.backgroundColor ,foreground = self.titlesColor ,font = self.headLineFont)
 		self.varTurtleBot   = IntVar()
@@ -1739,6 +1743,8 @@ class MobileRobotSimulator(threading.Thread):
 		self.buttonLastSimulation   .grid(column = 4 ,row = 16  ,sticky = (N, W) ,padx = (10,5))
 		self.buttonRunSimulation.grid(column = 4 ,row = 17 ,sticky = (N, W) ,padx = (10,5))
 		self.buttonStop         .grid(column = 4 ,row = 18 ,sticky = (N, W) ,padx = (10,5))
+		self.labelBattery		.grid(column = 4 ,row = 20 ,sticky = (N, W) ,padx = (10,5))
+		self.batteryBar			.grid(column = 4, row = 21, sticky = (N, W), padx = (10,5))
 
 		self.content  .grid(column = 0 ,row = 0 ,sticky = (N, S, E, W))
 		self.frame    .grid(column = 0 ,row = 0 ,columnspan = 3 ,rowspan = 2 ,sticky = (N, S, E, W))

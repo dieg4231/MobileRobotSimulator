@@ -2,6 +2,7 @@
 
 from MobileRobotSimulator import *
 from simulator.srv import *
+from minibot_msgs.srv import *
 from simulator.msg import Parameters
 from simulator.msg import PosesArray
 from simulator.msg import poseCustom
@@ -87,6 +88,16 @@ def turn_lights(lights_array):
 	lights = Int8MultiArray()
 	lights.data = lights_array
 	lights_pub.publish(lights)
+
+def battery_charge():
+	rospy.wait_for_service('/battery_perc')
+	try:
+		get_batt_perc = rospy.ServiceProxy('/battery_perc', GetBattPerc)
+		#batt_charge = get_batt_perc()
+		gui.batteryBar['value'] = get_batt_perc().batt_percentage
+	except rospy.ServiceException as e:
+		print("Service /battery_perc failes :'(")
+		gui.batteryBar['value'] = 0
 	
 def ros():
 	global lights_pub
@@ -125,6 +136,7 @@ def ros():
 	rate = rospy.Rate(100)
 
 	while not gui.stopped:
+		battery_charge()
 		parameters = gui.get_parameters()
 		msg_params.robot_x = parameters[0]
 		msg_params.robot_y = parameters[1]
@@ -178,7 +190,7 @@ def ros():
 		if lights_array != [parameters[19], parameters[20], 0, 0, 0, 0]:
 			lights_array = [parameters[19], parameters[20], 0, 0, 0, 0]
 			turn_lights(lights_array)
-
+		
 		rate.sleep()
 		#print(gui.stopped)
 	
