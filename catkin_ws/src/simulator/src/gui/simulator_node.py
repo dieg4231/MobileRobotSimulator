@@ -89,18 +89,53 @@ def turn_lights(lights_array):
 	lights.data = lights_array
 	lights_pub.publish(lights)
 
+def publish_movement(move):
+	rate = rospy.Rate(1.8)
+	move_cmd = Twist()
+
+	try:
+		if move[0] == 1:
+			move_cmd.linear.x  = 0.5
+			move_cmd.angular.z = 0
+			move_pub.publish(move_cmd)
+			rate.sleep()
+
+		elif move[1] == 1:
+			move_cmd.linear.x  = -0.5
+			move_cmd.angular.z = 0
+			move_pub.publish(move_cmd)
+			rate.sleep()
+
+		elif move[2] == 1:
+			move_cmd.linear.x  = 0
+			move_cmd.angular.z = 1.8
+			move_pub.publish(move_cmd)
+			rate.sleep()
+
+		elif move[3] == 1:
+			move_cmd.linear.x  = 0
+			move_cmd.angular.z = -1.8
+			move_pub.publish(move_cmd)
+			rate.sleep()
+
+		else:
+			move_cmd.linear.x  = 0
+			move_cmd.angular.z = 0
+			move_pub.publish(move_cmd)
+	except:
+			move_cmd.linear.x  = 0
+			move_cmd.angular.z = 0
+			move_pub.publish(move_cmd)
+
 def battery_charge():
-	rospy.wait_for_service('/battery_perc')
 	try:
 		get_batt_perc = rospy.ServiceProxy('/battery_perc', GetBattPerc)
-		#batt_charge = get_batt_perc()
 		gui.batteryBar['value'] = get_batt_perc().batt_percentage
 	except rospy.ServiceException as e:
-		print("Service /battery_perc failes :'(")
 		gui.batteryBar['value'] = 0
 	
 def ros():
-	global lights_pub
+	global lights_pub, move_pub
 	rospy.init_node('simulator_gui_node')
 	a = rospy.Service('simulator_robot_step', simulator_robot_step, handle_robot_step)
 	b = rospy.Service('simulator_print_graph', simulator_algorithm_result, handle_print_graph)
@@ -115,6 +150,8 @@ def ros():
 	objPose_pub = rospy.Publisher("/objectsPose", PosesArray, queue_size=5)
 	odom_broadcaster = tf.TransformBroadcaster()
 	lights_pub = rospy.Publisher("/turn_lights", Int8MultiArray, queue_size=5)
+	move_pub   = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+
 	
 	x = 0.0
 	y = 0.0
@@ -127,16 +164,17 @@ def ros():
 	last_time = rospy.Time.now()
 
 	lights_array = [0, 0, 0, 0, 0, 0]
+	last_movement = []
 
 	pub_params = rospy.Publisher('simulator_parameters_pub', Parameters, queue_size = 0)
 	#rospy.Subscriber("simulator_laser_pub", Laser_values, callback)
 
+	battery_charge()
 	
 	msg_params = Parameters()
 	rate = rospy.Rate(100)
-
+	
 	while not gui.stopped:
-		battery_charge()
 		parameters = gui.get_parameters()
 		msg_params.robot_x = parameters[0]
 		msg_params.robot_y = parameters[1]
@@ -191,7 +229,17 @@ def ros():
 			lights_array = [parameters[19], parameters[20], 0, 0, 0, 0]
 			turn_lights(lights_array)
 		
+		if last_movement != parameters[21]:
+			publish_movement(parameters[21])
+			last_movement = parameters[21]
+			gui.movement = [0, 0, 0, 0]
+		
+		if(gui.isRunning is False):
+			battery_charge()
+
 		rate.sleep()
+
+
 		#print(gui.stopped)
 	
 	for _ in range(20):
