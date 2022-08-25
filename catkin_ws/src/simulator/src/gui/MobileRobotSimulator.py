@@ -772,7 +772,7 @@ class MobileRobotSimulator(threading.Thread):
 			if self.varSArray.get() :
 				self.varLidar.set(0)
 				self.entryNumSensors.delete ( 0, END )
-				self.entryNumSensors.insert ( 0, '8')
+				self.entryNumSensors.insert ( 0, '3')
 			else:
 				self.varLidar.set(0)
 				self.varSArray.set(1)
@@ -791,8 +791,19 @@ class MobileRobotSimulator(threading.Thread):
 
 			self.checkLidar.configure(state="normal")
 			self.checkSArray.configure(state="normal")
-			
-			subprocess.Popen([self.rospack.get_path('simulator')+'/src/turtlebot/start_rviz_turtlebot.sh'])
+
+			self.entryNumSensors.delete( 0, END )
+			self.entryNumSensors.insert( 0, '3')
+			self.entryOrigin.delete( 0, END)
+			self.entryOrigin.insert( 0, '-0.7853')
+			self.entryRange.delete( 0, END)
+			self.entryRange.insert( 0, '1.5708')
+			self.entryAdvance.delete( 0, END)
+			self.entryAdvance.insert( 0, '0.03')
+			self.entryValue.delete( 0, END)
+			self.entryValue.insert( 0, '0.17')
+
+			#subprocess.Popen([self.rospack.get_path('simulator')+'/src/turtlebot/start_rviz_turtlebot.sh'])
 			self.w.delete(self.nodes_image)
 			state='disabled'
 			if self.flagOnce :
@@ -834,6 +845,15 @@ class MobileRobotSimulator(threading.Thread):
 		else: 
 			self.entryNumSensors.delete ( 0, END )
 			self.entryNumSensors   .insert ( 0, '20')
+			self.entryOrigin.delete( 0, END)
+			self.entryOrigin.insert( 0, '-1.5707')
+			self.entryRange.delete( 0, END)
+			self.entryRange.insert( 0, '3.1415')
+			self.entryAdvance.delete( 0, END)
+			self.entryAdvance.insert( 0, '0.04')
+			self.entryValue.delete( 0, END)
+			self.entryValue.insert( 0, '0.05')
+
 			self.checkLidar.configure(state="disabled")
 			self.checkSArray.configure(state="disabled")
 			self.buttonMapLess.configure(state="disabled")
@@ -886,6 +906,7 @@ class MobileRobotSimulator(threading.Thread):
 		else:
 			print("Turn off light 2")
 		print("---------------")'''
+
 	#####################################################################
 	#####################################################################
 	#####################################################################
@@ -1518,8 +1539,10 @@ class MobileRobotSimulator(threading.Thread):
 		self.hokuyoColor = '#4F58DB' 
 		self.arrowColor  = '#1AAB4A' 
 		self.laserColor  = "#00DD41" 
-
-
+		self.warnLightColor   = '#F7FD2A'
+		self.warnStrongColor  = '#EEF511' 
+		self.errorLightColor  = '#FA0A0A'
+		self.errorStrongColor = "#E10B0B"
 		
 		self.root = Tk()
 		self.root.protocol("WM_DELETE_WINDOW", self.kill)
@@ -1589,7 +1612,6 @@ class MobileRobotSimulator(threading.Thread):
 		self.buttonMapLess = Button(self.rightMenu ,width = 5, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont ,text = "Zoom Out" ,command = self.mapLess)
 		self.buttonMapMore = Button(self.rightMenu ,width = 5, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont, text = "Zoom In " ,command = self.mapMore)
 
-		
 		##### Rigth menu widgets declaration
 
 		# Environment
@@ -1613,7 +1635,7 @@ class MobileRobotSimulator(threading.Thread):
 	
 		# Robot 
 
-		self.lableRobot     = Label(self.rightMenu ,text = "Robot"              ,background = self.backgroundColor ,foreground = self.titlesColor ,font = self.headLineFont )
+		self.labelRobot     = Label(self.rightMenu ,text = "Robot"              ,background = self.backgroundColor ,foreground = self.titlesColor ,font = self.headLineFont )
 		self.labelPoseX     = Label(self.rightMenu ,text = "Pose X:"            ,background = self.backgroundColor ,font = self.lineFont)
 		self.labelPoseY     = Label(self.rightMenu ,text = "Pose Y:"            ,background = self.backgroundColor ,font = self.lineFont)
 		self.labelAngle     = Label(self.rightMenu ,text = "Angle:"             ,background = self.backgroundColor ,font = self.lineFont)
@@ -1663,15 +1685,16 @@ class MobileRobotSimulator(threading.Thread):
 
 		# buttons
 
-		self.lableSimulator      = Label (self.rightMenu ,text = "Simulator" ,background = self.backgroundColor ,foreground = self.titlesColor ,font = self.headLineFont)
-		self.buttonRviz         = Button(self.rightMenu ,width = 20, text = "Open Rviz", foreground = self.buttonFontColor ,background = self.buttonColor, font = self.buttonFont, command = self.start_rviz )
-		self.buttonPlotTopological= Button(self.rightMenu ,width = 20, text = "Plot Topological", foreground = self.buttonFontColor ,background = self.buttonColor, font = self.buttonFont ,command = self.print_topological_map  )
-		self.buttonLastSimulation= Button(self.rightMenu ,width = 20, text = "Run last simulation" ,state="disabled", foreground = self.buttonFontColor ,background = self.buttonColor , font = self.buttonFont ,command = self.rewindF  )
-		self.buttonRunSimulation = Button(self.rightMenu ,width = 20, text = "Run simulation", foreground = self.buttonFontColor ,background = self.buttonColor,font = self.buttonFont,command = lambda: self.s_t_simulation(True) )
-		self.buttonStop          = Button(self.rightMenu ,width = 20, text = "Stop", foreground = self.buttonFontColor ,background = self.buttonColor, font = self.buttonFont, command = lambda: self.s_t_simulation(False) )
+		self.lableSimulator        = Label (self.rightMenu ,text = "Simulator" ,background = self.backgroundColor ,foreground = self.titlesColor ,font = self.headLineFont)
+		self.buttonRviz            = Button(self.rightMenu ,width = 20, text = "Open Rviz", foreground = self.buttonFontColor ,background = self.buttonColor, font = self.buttonFont, command = self.start_rviz )
+		self.buttonPlotTopological = Button(self.rightMenu ,width = 20, text = "Plot Topological", foreground = self.buttonFontColor ,background = self.buttonColor, font = self.buttonFont ,command = self.print_topological_map  )
+		self.buttonLastSimulation  = Button(self.rightMenu ,width = 20, text = "Run last simulation" ,state="disabled", foreground = self.buttonFontColor ,background = self.buttonColor , font = self.buttonFont ,command = self.rewindF  )
+		self.buttonRunSimulation   = Button(self.rightMenu ,width = 20, text = "Run simulation", foreground = self.buttonFontColor ,background = self.buttonColor,font = self.buttonFont,command = lambda: self.s_t_simulation(True) )
+		self.buttonStop            = Button(self.rightMenu ,width = 20, text = "Stop", foreground = self.buttonFontColor ,background = self.buttonColor, font = self.buttonFont, command = lambda: self.s_t_simulation(False) )
 		self.labelBattery = Label(self.rightMenu ,text = "Battery Charge:", background = self.backgroundColor ,font = self.lineFont)
-		self.batteryBar = ttk.Progressbar(self.rightMenu, orient=HORIZONTAL, mode='determinate', length=150)
+		self.batteryBar   = ttk.Progressbar(self.rightMenu, orient=HORIZONTAL, mode='determinate', length=150)
 		self.batteryBar['value'] = 0
+		self.labelBattAdvertise = Label(self.rightMenu, text = "Battery Low", background = self.errorStrongColor, foreground = self.titlesColor, font = self.headLineFont)
 
 		self.lableTurtleBot = Label(self.rightMenu, text = "Real robot" ,background = self.backgroundColor ,foreground = self.titlesColor ,font = self.headLineFont)
 		self.labelMoveBot   = Label(self.rightMenu, text = "Move robot", background = self.backgroundColor ,font = self.lineFont)
@@ -1723,7 +1746,7 @@ class MobileRobotSimulator(threading.Thread):
 		
 		# Robot
 
-		self.lableRobot     .grid(column = 4 ,row = 0 ,sticky = (N, W) ,padx = (5,5))     
+		self.labelRobot     .grid(column = 4 ,row = 0 ,sticky = (N, W) ,padx = (5,5))     
 		self.labelPoseX     .grid(column = 4 ,row = 1 ,sticky = (N, W) ,padx = (10,5))
 		self.labelPoseY     .grid(column = 4 ,row = 2 ,sticky = (N, W) ,padx = (10,5))
 		self.labelAngle     .grid(column = 4 ,row = 3 ,sticky = (N, W) ,padx = (10,5))
@@ -1780,7 +1803,9 @@ class MobileRobotSimulator(threading.Thread):
 		self.buttonRunSimulation.grid(column = 4 ,row = 17 ,sticky = (N, W) ,padx = (10,5))
 		self.buttonStop         .grid(column = 4 ,row = 18 ,sticky = (N, W) ,padx = (10,5))
 		self.labelBattery		.grid(column = 4 ,row = 20 ,sticky = (N, W) ,padx = (10,5))
-		self.batteryBar			.grid(column = 4, row = 21, sticky = (N, W), padx = (10,5))
+		self.batteryBar			.grid(column = 4 ,row = 21 ,sticky = (N, W) ,padx = (10,5))
+		self.labelBattAdvertise .grid(column = 4 ,row = 22 ,sticky = (N, W) ,padx = (20,5))
+
 
 		self.content  .grid(column = 0 ,row = 0 ,sticky = (N, S, E, W))
 		self.frame    .grid(column = 0 ,row = 0 ,columnspan = 3 ,rowspan = 2 ,sticky = (N, S, E, W))
@@ -1822,6 +1847,7 @@ class MobileRobotSimulator(threading.Thread):
 		self.checkLidar.configure(state="disabled")
 		self.checkSArray.configure(state="disabled")
 
+		self.labelBattAdvertise.grid_forget()
 
 		
 	def run(self):	
