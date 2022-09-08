@@ -12,6 +12,7 @@
 
 	<rosparam command="load" file="$(find simulator)/src/data/control/control.yaml" />
 	<node name="move_turtlebot_node" pkg="simulator" type="move_turtlebot_node"/>
-	<node name="auto_charge_server" pkg="simulator" type="auto_charge_server" output="screen" />
+	<node name="auto_charge_server"  pkg="simulator" type="auto_charge_server" output="screen" />
+	<node name="follow_line_server"  pkg="simulator" type="follow_line_server" />
 
 </launch>

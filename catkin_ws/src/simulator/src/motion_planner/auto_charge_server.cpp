@@ -63,10 +63,10 @@ void follow_line(){
     else
         pubCmdVel.publish(move_robot(STOP));
     
-    if(obstacle_distance < obstacle_threshold){
+    /*if(obstacle_distance < obstacle_threshold){
         pubCmdVel.publish(move_robot(BACKWARD));
 	cout << "Obstacle" << endl;
-    }
+    }//*/
 }
 
 bool startCharging(simulator::auto_charge::Request &req, simulator::auto_charge::Response &res){

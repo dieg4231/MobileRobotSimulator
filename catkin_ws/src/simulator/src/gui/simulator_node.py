@@ -177,7 +177,7 @@ def ros():
 	current_time = rospy.Time.now()
 	last_time = rospy.Time.now()
 
-	lights_array = [0, 0, 0, 0, 0, 0]
+	lights_array = [0, 0]
 	last_movement = []
 
 	pub_params = rospy.Publisher('simulator_parameters_pub', Parameters, queue_size = 0)
@@ -252,8 +252,8 @@ def ros():
 
 		objPose_pub.publish(convertArray2Pose(gui.objects_data))		   
 		
-		if lights_array != [parameters[19], parameters[20], 0, 0, 0, 0]:
-			lights_array = [parameters[19], parameters[20], 0, 0, 0, 0]
+		if lights_array != [parameters[19], parameters[20]]:
+			lights_array = [parameters[19], parameters[20]]
 			turn_lights(lights_array)
 		
 		if last_movement != parameters[21]:
