@@ -10,8 +10,7 @@
 	
 	<node pkg="tf" type="static_transform_publisher" name="map" args="0 0 0 0 0 0 1 map link1 100" />
 
-	<rosparam command="load" file="$(find simulator)/src/data/control/control.yaml" />
-	<node name="move_turtlebot_node" pkg="simulator" type="move_turtlebot_node"/>
+	<node name="move_minibot_node" pkg="simulator" type="move_minibot_node"/>
 	<node name="auto_charge_server"  pkg="simulator" type="auto_charge_server" output="screen" />
 	<node name="follow_line_server"  pkg="simulator" type="follow_line_server" />
 

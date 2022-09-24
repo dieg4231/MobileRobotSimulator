@@ -118,7 +118,7 @@ geometry_msgs::Twist compute_speed(float goal_angle, float robot_angle)
     
     //PARAMETER FOR ANGULAR MOVEMENTS
     float alpha = angular_alpha;
-    float max_angular = angular_alpha;
+    float max_angular = angular_max_angular;
 
     geometry_msgs::Twist speed;
 	speed.linear.x  = 0;

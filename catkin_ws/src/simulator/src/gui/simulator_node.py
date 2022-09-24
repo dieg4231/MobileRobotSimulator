@@ -93,7 +93,7 @@ def turn_lights(lights_array):
 	lights_pub.publish(lights)
 
 def publish_movement(move):
-	rate = rospy.Rate(1.8)
+	rate = rospy.Rate(1.2)
 	move_cmd = Twist()
 
 	try:
@@ -111,13 +111,13 @@ def publish_movement(move):
 
 		elif move[2] == 1:
 			move_cmd.linear.x  = 0
-			move_cmd.angular.z = 1.8
+			move_cmd.angular.z = 2.4
 			move_pub.publish(move_cmd)
 			rate.sleep()
 
 		elif move[3] == 1:
 			move_cmd.linear.x  = 0
-			move_cmd.angular.z = -1.8
+			move_cmd.angular.z = -2.4
 			move_pub.publish(move_cmd)
 			rate.sleep()
 
