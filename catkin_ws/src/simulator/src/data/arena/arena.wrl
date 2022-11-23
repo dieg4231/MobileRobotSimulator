@@ -1,0 +1,35 @@
+
+
+;******************************************************************************
+;* File: Laboratorio.wrl						      *
+;* by Miguel Sanchez				     	 	              *
+;* Purpose: Definition of the forbidden and allowed areas in the Robot's      *
+;*          world. These areas are derivated from the objects in the	      *
+;*	    world.				      			      *
+;******************************************************************************
+
+( dimensions room 2.54 2.54 )
+
+( polygon obstacle obs1    0.410 2.154 0.425 2.154 0.425 2.540 0.410 2.540 )
+
+( polygon obstacle obs2    0.805 1.900 0.805 1.890 0.453 1.890 0.453 1.900 )
+( polygon obstacle obs2-1  0.463 1.890 0.473 1.890 0.473 1.730 0.463 1.730 )
+( polygon obstacle obs2-2  0.463 1.730 0.298 1.730 0.298 1.720 0.463 1.720 )
+( polygon obstacle obs2-3  0.310 1.720 0.320 1.720 0.320 1.193 0.310 1.193 )
+
+( polygon obstacle obs3    1.040 1.497 0.646 1.497 0.646 1.487 1.040 1.487 )
+( polygon obstacle obs3-1  0.646 1.487 0.656 1.487 0.656 0.997 0.646 0.997 )
+( polygon obstacle obs3-2  0.656 0.997 0.656 0.987 0.491 0.987 0.491 0.997 )
+
+( polygon obstacle obs4    0.280 0.670 1.040 0.670 1.040 0.660 0.280 0.660 )
+
+( polygon obstacle obs5    0.330 0.000 0.330 0.335 0.340 0.335 0.340 0.000 )
+( polygon obstacle obs5-1  0.330 0.335 0.516 0.335 0.516 0.345 0.330 0.345 )
+
+( polygon obstacle obs5    0.734 0.000 0.734 0.335 1.04 0.335 1.04 0.000 )
+
+
+( polygon wall wall1  0.00 0.00 0.00 2.54 0.01 2.54 0.01 0.00 )
+( polygon wall wall2  0.00 2.53 0.00 2.54 1.04 2.54 1.04 2.53 )
+( polygon wall wall3  1.03 2.54 2.54 2.54 2.54 0.00 1.03 0.00 )
+( polygon wall wall4  1.04 0.01 1.04 0.00 0.00 0.00 0.00 0.01 )

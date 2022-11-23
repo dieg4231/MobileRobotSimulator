@@ -655,6 +655,15 @@ class MobileRobotSimulator(threading.Thread):
 		self.sensors_values = sensors_values 		
 		self.c.set(1)
 
+	def handlePoseByAruco(self,x,y,r):
+
+		
+		self.robotX = self.convert_from_m_to_pixel(  x * math.cos(self.initR) + y * math.sin(self.initR) - self.initX )
+		self.robotY = self.canvasY-self.convert_from_m_to_pixel( y * math.cos(self.initR) - x * math.sin(self.initR) - self.initY  )
+
+		self.robot_theta = r 
+		self.d.set(1)
+	
 	def handle_turtle(self,x,y,r):
 
 		if self.varTurtleBot.get():
@@ -1605,7 +1614,7 @@ class MobileRobotSimulator(threading.Thread):
 		self.entryLightX = Label(self.rightMenu ,text = "Click Right" ,background = self.backgroundColor ,font = self.lineFont ,justify='center')
 		self.entryLightY = Label(self.rightMenu ,text = "Click Right" ,background = self.backgroundColor ,font = self.lineFont ,justify='center')
 		self.entryStepsExcec = Label(self.rightMenu ,text = "0" ,background = self.backgroundColor ,font = self.lineFont ,justify='center')
-		self.entryFile.insert ( 0, 'empty' )
+		self.entryFile.insert ( 0, 'arena' )
 		self.entrySteps.insert( 0, '100' )
 		self.entryBehavior.insert ( 0, '4' )
 
@@ -1657,7 +1666,7 @@ class MobileRobotSimulator(threading.Thread):
 		self.entryPoseY     .insert ( 0, '200' )
 		self.entryAngle     .insert ( 0, '0.0' )
 		self.entryAngle.bind('<Return>', self.set_angle)
-		self.entryRadio     .insert ( 0, '0.03' )
+		self.entryRadio     .insert ( 0, '0.06' )
 		self.entryAdvance   .insert ( 0, '0.04' )
 		self.entryTurnAngle .insert ( 0, '0.7857' )
 

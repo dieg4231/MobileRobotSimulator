@@ -12,13 +12,27 @@ from tf.transformations import euler_from_quaternion
 import tf
 import time
 import rospy
-from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
+from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3, PoseStamped
 from std_msgs.msg import Int8MultiArray
 
 gui=MobileRobotSimulator()
 
 battery_low = False
 battery_charging = False
+
+def handlePoseByAruco(msg):
+	quaternion = (
+    msg.pose.orientation.x,
+    msg.pose.orientation.y,
+    msg.pose.orientation.z,
+    msg.pose.orientation.w)
+
+	euler = euler_from_quaternion(quaternion)
+	roll = euler[0]
+	pitch = euler[1]
+	yaw = euler[2]
+	gui.handlePoseByAruco(msg.pose.position.y,msg.pose.position.x,-yaw+1.5707)
+
 
 def turtle_odometry(msg):
 	quaternion = (
@@ -160,6 +174,7 @@ def ros():
 	
 	#rospy.Subscriber('/scan',LaserScan,update_value,queue_size=1)
 	#rospy.Subscriber('/odom',Odometry, turtle_odometry ,queue_size=1)
+	rospy.Subscriber('/robotPoseByAruco',PoseStamped, handlePoseByAruco ,queue_size=1)
 	odom_pub = rospy.Publisher("/odom_simul", Odometry, queue_size=50)
 	objPose_pub = rospy.Publisher("/objectsPose", PosesArray, queue_size=5)
 	odom_broadcaster = tf.TransformBroadcaster()
