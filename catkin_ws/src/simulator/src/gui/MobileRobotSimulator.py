@@ -657,12 +657,12 @@ class MobileRobotSimulator(threading.Thread):
 
 	def handlePoseByAruco(self,x,y,r):
 
-		
-		self.robotX = self.convert_from_m_to_pixel(  x * math.cos(self.initR) + y * math.sin(self.initR) - self.initX )
-		self.robotY = self.canvasY-self.convert_from_m_to_pixel( y * math.cos(self.initR) - x * math.sin(self.initR) - self.initY  )
+		if self.varTurtleBot.get():
+			self.robotX = self.convert_from_m_to_pixel(  x * math.cos(self.initR) + y * math.sin(self.initR) - self.initX )
+			self.robotY = self.canvasY- (y * self.canvasY / self.mapY)
 
-		self.robot_theta = r 
-		self.d.set(1)
+			self.robot_theta = r 
+			self.d.set(1)
 	
 	def handle_turtle(self,x,y,r):
 

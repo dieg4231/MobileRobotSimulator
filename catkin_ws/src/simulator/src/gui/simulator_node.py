@@ -31,7 +31,7 @@ def handlePoseByAruco(msg):
 	roll = euler[0]
 	pitch = euler[1]
 	yaw = euler[2]
-	gui.handlePoseByAruco(msg.pose.position.y,msg.pose.position.x,-yaw+1.5707)
+	gui.handlePoseByAruco(msg.pose.position.x,msg.pose.position.y,yaw)
 
 
 def turtle_odometry(msg):
