@@ -9,16 +9,21 @@ from simulator.msg import poseCustom
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion 
+import os
 import tf
 import time
 import rospy
 from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3, PoseStamped
 from std_msgs.msg import Int8MultiArray
 
+
 gui=MobileRobotSimulator()
 
 battery_low = False
 battery_charging = False
+
+video_name = ""
+video_path = "/home/" + os.environ.get("USERNAME") + "/MobileRobotSimulator/catkin_ws/recordings/"
 
 def handlePoseByAruco(msg):
 	quaternion = (
@@ -156,6 +161,42 @@ def battery_advertise(message, color):
 	gui.labelBattAdvertise.config( text = message , bg = color )
 	gui.labelBattAdvertise.grid(column = 4 ,row = 22 ,sticky = (N, W) ,padx = (10,5))
 	
+def play_recording():
+	os.system('mplayer ' + video_path + video_name)
+	print("playing video: " + video_path + video_name)
+
+def transfer_video():
+	time.sleep(6)
+	try:
+		video_transfer = rospy.ServiceProxy('/transfer_file', TransferFile)
+		if(video_transfer(video_name).status == "ok"):
+			rospy.loginfo("Video transfered correctly")
+		else:
+			rospy.logerr("Video was not found")
+	except:
+		print("/transfer_file service couldnt get response")
+
+def start_recording():
+	global video_name
+	try:
+		start_recording = rospy.ServiceProxy('/start_recording', StartRecording)
+		video_name = start_recording(os.environ.get("USER")).video_name
+
+		if(video_name != ""):		
+			gui.labelVideoNamed = Label(gui.rightMenu, text = "File: " + video_name, font = gui.lineFont)
+			gui.labelVideoNamed.grid(column = 0 ,row = 24 ,sticky = (N, W) ,padx = 0, pady = 65,columnspan = 3)
+		
+	except rospy.ServiceException as e:
+		print("/start_recording service couldnt get response")
+
+def stop_recording():
+	try:
+		stop_recording = rospy.ServiceProxy('/finish_recording', FinishRecording)
+		print(stop_recording().video_status)
+		transfer_video()
+	except rospy.ServiceException as e:
+		print("/finish_recording service couldnt get response")
+
 def get_params():
 	global battery_low, battery_charging
 	if rospy.has_param('/battery_low'):
@@ -239,6 +280,9 @@ def ros():
 		msg_params.useLidar = parameters[17]
 		msg_params.useSArray = parameters[18]
 		msg_params.realLights = [parameters[19], parameters[20], 0, 0, 0, 0]
+		#msg_params.play_record = parameters[21]
+		#msg_params.start_record = parameters[22]
+		#msg_params.finish_record = parameters[23]
 
 		pub_params.publish(msg_params)
 
@@ -305,6 +349,18 @@ def ros():
 			else: 
 				gui.labelBattAdvertise.grid_forget()
 
+		#print(str(parameters[22]) + ", " + str(parameters[23]) + ", " + str(parameters[24]))
+		
+		if(parameters[22]):
+			play_recording()
+			gui.restart_play_record()
+		if(parameters[23]):
+			start_recording()
+			gui.restart_start_record()
+		if(parameters[24]):
+			stop_recording()
+			gui.restart_finish_record()
+		
 		#print(gui.stopped)
 	
 	for _ in range(20):

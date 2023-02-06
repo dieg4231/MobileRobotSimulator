@@ -17,6 +17,7 @@ import ttk
 import time
 import math
 from PIL import Image
+from PIL import ImageTk
 from PIL import ImageDraw
 import tkMessageBox
 import os
@@ -104,6 +105,10 @@ class MobileRobotSimulator(threading.Thread):
 		self.movement = []
 
 		self.start()
+
+		self.play_record   = False
+		self.start_record  = False
+		self.finish_record = False
 
 	def kill(self):  # When press (x) window
 		self.stopped = True
@@ -225,10 +230,31 @@ class MobileRobotSimulator(threading.Thread):
 			parameters.append(self.movement)
 		except ValueError:
 			parameters.append([])
+		try:
+			parameters.append(self.play_record)
+		except ValueError:
+			parameters.append(False)
+		try:
+			parameters.append(self.start_record)
+		except ValueError:
+			parameters.append(False)
+		try:
+			parameters.append(self.finish_record)
+		except ValueError:
+			parameters.append(False)
 
 		return parameters
-
 	
+	def restart_play_record(self):
+		self.play_record = False
+
+	def restart_start_record(self):
+		self.start_record = False
+
+	def restart_finish_record(self):
+		self.finish_record = False
+		
+
 
 ##########################################
 ##########################################
@@ -1430,6 +1456,22 @@ class MobileRobotSimulator(threading.Thread):
 	def moveBotStop(self):
 		self.movement = []
 
+	def compileMessage(self):
+		status = os.system("cd ~/MobileRobotSimulator/catkin_ws && catkin_make")
+		if status == 0:
+			tkMessageBox.showinfo("Code compilated", "Compilation Successful")
+		else:
+			tkMessageBox.showerror("Compilation Error", "Code no compiled, there's an error in your code. :(  ")
+
+	def playRecording(self):
+		self.play_record = True
+
+	def startRecording(self):
+		self.start_record = True
+	
+	def stopRecording(self):
+		self.finish_record = True
+
 	def set_zero_angle(self): #
 		self.robot_theta = 0.0
 		self.plot_robot()	
@@ -1636,7 +1678,19 @@ class MobileRobotSimulator(threading.Thread):
 		self.checkAddNoise    = Checkbutton(self.rightMenu ,text = 'Add Noise'    ,variable = self.varAddNoise    ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor)
 		self.checkLoadObjects    = Checkbutton(self.rightMenu ,text = 'Load Objects'    ,variable = self.varLoadObjects    ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor,command = self.read_objects)
 		
+		record_img = Image.open(self.rospack.get_path('simulator')+'/src/gui/recording.png')
+		stop_img = Image.open(self.rospack.get_path('simulator')+'/src/gui/stop.png')
+		play_img = Image.open(self.rospack.get_path('simulator')+'/src/gui/play.png')
 
+		record_img = record_img.resize((20,20), Image.ANTIALIAS)
+		stop_img = stop_img.resize((20,20), Image.ANTIALIAS)
+		play_img = play_img.resize((20,20), Image.ANTIALIAS)
+
+		self.recordImg =  ImageTk.PhotoImage(record_img)
+		self.stopImg =  ImageTk.PhotoImage(stop_img)
+		self.playImg = ImageTk.PhotoImage(play_img)
+
+		#self.recordImg = PhotoImage( file = self.rospack.get_path('simulator')+'/src/gui/recording.png')
 		self.checkFaster      .deselect()
 		self.checkShowSensors .select()
 		self.checkAddNoise    .deselect()
@@ -1704,6 +1758,7 @@ class MobileRobotSimulator(threading.Thread):
 		self.batteryBar   = ttk.Progressbar(self.rightMenu, orient=HORIZONTAL, mode='determinate', length=150)
 		self.batteryBar['value'] = 0
 		self.labelBattAdvertise = Label(self.rightMenu, text = "Battery Low", background = self.errorStrongColor, foreground = self.titlesColor, font = self.headLineFont)
+		self.labelVideoNamed = Label(self.rightMenu, text = "No video saved", font = self.lineFont)
 
 		self.lableTurtleBot = Label(self.rightMenu, text = "Real robot" ,background = self.backgroundColor ,foreground = self.titlesColor ,font = self.headLineFont)
 		self.labelMoveBot   = Label(self.rightMenu, text = "Move robot", background = self.backgroundColor ,font = self.lineFont)
@@ -1714,15 +1769,21 @@ class MobileRobotSimulator(threading.Thread):
 		self.varLight2  = IntVar()
 		self.checkTurtleBot = Checkbutton(self.rightMenu ,text = 'Use real robot' ,variable = self.varTurtleBot ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_real_robot )
 		self.checkLidar = Checkbutton(self.rightMenu ,text = 'Use lidar' ,variable = self.varLidar ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_lidar )
-		self.checkSArray = Checkbutton(self.rightMenu ,text = 'Use sensors array' ,variable = self.varSArray ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_s_array )
-		self.checkLight1 = Checkbutton(self.rightMenu, text = 'Turn on real light 1', variable = self.varLight1, onvalue = 1, offvalue = 0, background = self.backgroundColor, command = self.turn_light)
-		self.checkLight2 = Checkbutton(self.rightMenu, text = 'Turn on real light 2', variable = self.varLight2, onvalue = 1, offvalue = 0, background = self.backgroundColor, command = self.turn_light)
+		self.checkSArray = Checkbutton(self.rightMenu ,text = 'Sensors array' ,variable = self.varSArray ,onvalue = 1 ,offvalue = 0 ,background = self.backgroundColor, command = self.use_s_array )
+		self.checkLight1 = Checkbutton(self.rightMenu, text = 'Turn on light 1', variable = self.varLight1, onvalue = 1, offvalue = 0, background = self.backgroundColor, command = self.turn_light)
+		self.checkLight2 = Checkbutton(self.rightMenu, text = 'Turn on light 2', variable = self.varLight2, onvalue = 1, offvalue = 0, background = self.backgroundColor, command = self.turn_light)
 		self.buttonMoveFoward    = Button(self.rightMenu, width = 1, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont, text = "^", command = self.moveBotFoward)
 		self.buttonMoveLeft      = Button(self.rightMenu, width = 1, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont, text = "<", command = self.moveBotLeft)
 		self.buttonMoveRight     = Button(self.rightMenu, width = 1, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont, text = ">", command = self.moveBotRight)
 		self.buttonMoveBackward  = Button(self.rightMenu, width = 1, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont, text = "v", command = self.moveBotBackward)
 		self.buttonMoveStop      = Button(self.rightMenu, width = 1, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont, text ="||", command = self.moveBotStop)
-
+		self.buttonCompile		 = Button(self.rightMenu, width = 8, height = 2, font = self.buttonFont, text ="Compile", command = self.compileMessage)
+		#self.buttonStartRecording = Button(self.rightMenu, text = "0", width = 1, font = self.buttonFont, command = self.startRecording)
+		#self.buttonStopRecording = Button(self.rightMenu, width = 1, font = self.buttonFont, text = "|_|", command = self.stopRecording)
+		#self.buttonPlayRecording = Button(self.rightMenu, width = 1, font = self.buttonFont, text = "=>", command = self.playRecording)
+		self.buttonStartRecording = Button(self.rightMenu, image = self.recordImg, width = 20, font = self.buttonFont, command = self.startRecording)
+		self.buttonStopRecording  = Button(self.rightMenu, image = self.stopImg,   width = 20, font = self.buttonFont, command = self.stopRecording)
+		self.buttonPlayRecording = Button(self.rightMenu,  image = self.playImg, width = 20, font = self.buttonFont, command = self.playRecording)
 		#### Right menu widgets grid			
 
 		# Environment
@@ -1740,7 +1801,7 @@ class MobileRobotSimulator(threading.Thread):
 		self.entrySteps		 .grid(column = 1 ,row = 2 ,columnspan = 2 ,sticky = (N, W) ,padx = 5)	
 		
 		self.buttonBehaviorLess.grid(column = 1 ,row = 3 ,columnspan = 1 ,sticky = (N, W) ,padx = 5)
-		self.entryBehavior   .grid(column = 1 ,row = 3 ,columnspan = 1  ,padx = 5)
+		self.entryBehavior   .grid(column = 1 ,row = 3 ,columnspan = 1  ,padx = 50)
 		self.buttonBehaviorMore.grid(column = 1 ,row = 3 ,columnspan = 1 ,sticky = (N, E) ,padx = 5)
 		
 		self.entryLightX.grid(column = 1 ,row = 4 ,columnspan = 2 ,sticky = (N, W) ,padx = 5)
@@ -1799,6 +1860,12 @@ class MobileRobotSimulator(threading.Thread):
 		self.buttonMoveRight   .grid(column = 0, row = 20, columnspan = 2, sticky = (N, W), padx = 68)
 		self.buttonMoveBackward.grid(column = 0, row = 21, columnspan = 2, sticky = (N, W), padx = 35)
 		self.buttonMoveStop    .grid(column = 0, row = 20, columnspan = 2, sticky = (N, W), padx = 35)
+		self.buttonCompile     .grid(column = 0, row = 24, columnspan = 1, sticky = (N, W), padx = 5, pady = 10)
+		self.buttonStartRecording .grid(column = 1, row = 24, columnspan = 1, sticky = (N, W),padx = (5,0), pady = 20)
+		self.buttonStopRecording.grid(column = 1, row = 24, columnspan = 1, sticky = (N, W), padx = (35,0), pady = 20)
+		self.buttonPlayRecording.grid(column = 1, row = 24, columnspan = 1, sticky = (N, W), padx = (65,0), pady = 20)
+
+
 
 		#self.buttonMapLess.grid(column = 1 ,row = 19 ,columnspan=1 ,sticky = (N, W) ,padx = 5)
 		#self.buttonMapMore.grid(column = 1 ,row = 19 ,columnspan=1 ,sticky = (N, E) ,padx = 5)
@@ -1814,7 +1881,7 @@ class MobileRobotSimulator(threading.Thread):
 		self.labelBattery		.grid(column = 4 ,row = 20 ,sticky = (N, W) ,padx = (10,5))
 		self.batteryBar			.grid(column = 4 ,row = 21 ,sticky = (N, W) ,padx = (10,5))
 		self.labelBattAdvertise .grid(column = 4 ,row = 22 ,sticky = (N, W) ,padx = (20,5))
-
+		self.labelVideoNamed		.grid(column = 0 ,row = 24 ,sticky = (N, W) ,padx = 0, pady = 65,columnspan = 3)
 
 		self.content  .grid(column = 0 ,row = 0 ,sticky = (N, S, E, W))
 		self.frame    .grid(column = 0 ,row = 0 ,columnspan = 3 ,rowspan = 2 ,sticky = (N, S, E, W))
@@ -1831,7 +1898,7 @@ class MobileRobotSimulator(threading.Thread):
 
 		self.gif2 = PhotoImage( file = self.rospack.get_path('simulator')+'/src/gui/light.png')
 		self.gif2.zoom(50, 50)
-
+ 
 		self.a = IntVar(value=3)
 		self.a.trace("w", self.move_robot)
 		

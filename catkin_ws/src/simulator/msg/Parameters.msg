@@ -19,3 +19,6 @@ bool useRealRobot
 bool useLidar
 bool useSArray
 bool[6] realLights
+bool play_record
+bool start_record
+bool finish_record
