@@ -162,4 +162,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-.vscode/
+.vscode/*
+*.pyc
+catkin_ws/recordings/
+.vscode/settings.json

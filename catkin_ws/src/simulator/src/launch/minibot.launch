@@ -13,5 +13,5 @@
 	<node name="move_minibot_node" pkg="simulator" type="move_minibot_node"/>
 	<node name="auto_charge_server"  pkg="simulator" type="auto_charge_server" output="screen" />
 	<node name="follow_line_server"  pkg="simulator" type="follow_line_server" />
-
+	<node name="real_arena_viz" pkg="simulator" type="real_arena_viz" output="screen" />
 </launch>

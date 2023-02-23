@@ -4,6 +4,7 @@ project(simulator)
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
 
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
@@ -15,10 +16,13 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   clips_ros
   joy
+  image_transport
 )
 
 
 find_package(CGAL REQUIRED COMPONENTS Core)
+find_package(cv_bridge REQUIRED)
+find_package(OpenCV REQUIRED)
 set(CGAL_DONT_OVERRIDE_CMAKE_FLAGS TRUE CACHE BOOL "Don't override flags")
 message(CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS})
 include(${CGAL_USE_FILE})
@@ -77,6 +81,7 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 add_executable(motion_planner_node src/motion_planner/motion_planner_node.cpp)
@@ -142,4 +147,6 @@ add_executable(follow_line_client src/motion_planner/follow_line_client.cpp)
 target_link_libraries(follow_line_client ${catkin_LIBRARIES})
 add_dependencies(follow_line_client simulator_generate_messages_cpp)
 
-
+add_executable(real_arena_viz src/visualization/real_arena_viz.cpp)
+target_link_libraries(real_arena_viz ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+add_dependencies(real_arena_viz simulator_generate_messages_cpp)

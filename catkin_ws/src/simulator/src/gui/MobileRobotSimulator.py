@@ -1455,6 +1455,11 @@ class MobileRobotSimulator(threading.Thread):
 
 	def moveBotStop(self):
 		self.movement = []
+	
+	def viewArena(self):
+		print "Open viewer"
+		os.system("rosparam set /show_image true")
+		
 
 	def compileMessage(self):
 		status = os.system("cd ~/MobileRobotSimulator/catkin_ws && catkin_make")
@@ -1778,9 +1783,8 @@ class MobileRobotSimulator(threading.Thread):
 		self.buttonMoveBackward  = Button(self.rightMenu, width = 1, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont, text = "v", command = self.moveBotBackward)
 		self.buttonMoveStop      = Button(self.rightMenu, width = 1, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont, text ="||", command = self.moveBotStop)
 		self.buttonCompile		 = Button(self.rightMenu, width = 8, height = 2, font = self.buttonFont, text ="Compile", command = self.compileMessage)
-		#self.buttonStartRecording = Button(self.rightMenu, text = "0", width = 1, font = self.buttonFont, command = self.startRecording)
-		#self.buttonStopRecording = Button(self.rightMenu, width = 1, font = self.buttonFont, text = "|_|", command = self.stopRecording)
-		#self.buttonPlayRecording = Button(self.rightMenu, width = 1, font = self.buttonFont, text = "=>", command = self.playRecording)
+		self.buttonViewerArena	 = Button(self.rightMenu, width = 10, height = 2, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont, text ="View real", command = self.viewArena)
+
 		self.buttonStartRecording = Button(self.rightMenu, image = self.recordImg, width = 20, font = self.buttonFont, command = self.startRecording)
 		self.buttonStopRecording  = Button(self.rightMenu, image = self.stopImg,   width = 20, font = self.buttonFont, command = self.stopRecording)
 		self.buttonPlayRecording = Button(self.rightMenu,  image = self.playImg, width = 20, font = self.buttonFont, command = self.playRecording)
@@ -1864,6 +1868,7 @@ class MobileRobotSimulator(threading.Thread):
 		self.buttonStartRecording .grid(column = 1, row = 24, columnspan = 1, sticky = (N, W),padx = (5,0), pady = 20)
 		self.buttonStopRecording.grid(column = 1, row = 24, columnspan = 1, sticky = (N, W), padx = (35,0), pady = 20)
 		self.buttonPlayRecording.grid(column = 1, row = 24, columnspan = 1, sticky = (N, W), padx = (65,0), pady = 20)
+		self.buttonViewerArena  .grid(column = 4, row = 24, columnspan = 3, sticky = (N, W), padx = (35,0), pady = 0)
 
 
 

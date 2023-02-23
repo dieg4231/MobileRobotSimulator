@@ -67,7 +67,9 @@
  
   <build_depend>message_generation</build_depend>
   <build_depend>clips</build_depend>
+  <build_depend>image_transport</build_depend>
   <exec_depend>message_runtime</exec_depend>
+  <exec_depend>image_transport</exec_depend>
 
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
