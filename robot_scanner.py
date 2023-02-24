@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import nmap
 import time
 import paramiko
@@ -9,6 +10,7 @@ import os
 import rosgraph
 import shlex
 from psutil import Popen
+import threading
 
 hosts =   ['192.168.0.165',
          '192.168.0.181',
@@ -18,8 +20,12 @@ hosts =   ['192.168.0.165',
          '192.168.0.193'
           ]
 
-#ip_available = [False, False, False, True, False, True]
-ip_available = []
+ips_scanned = 0
+scanner = nmap.PortScanner()
+robot_selected = "No robot selected"
+ip_available = [False, False, False, False, False, False]
+root = tk.Tk()
+
 
 def launch_simulator(ip):
     os.environ["ROS_MASTER_URI"]="http://" + ip + ":11311"
@@ -66,26 +72,49 @@ def connect_host(ip):
     ssh.close()
         
 def event(i):
+    global robot_selected
     connect_host(hosts[i-1])
+    robot_selected = "Selected->" + " Minibot " + str(i)
+    selected_label = ttk.Label(root, text = robot_selected, font='Helvetica 11 bold')
+    selected_label.grid(column=1, row=len(hosts)+1, sticky=tk.W, padx=5, pady=5)
 
-def auto_scan():
-    global ip_available
-    scanner = nmap.PortScanner()
-    for ip in hosts:
-        scanner.scan(ip, '1', '-v')
-        if(scanner[ip].state() == "up"):
-            print(ip + '->' + ' ' + 'Available')
-            ip_available.append(True)
-        else:
-            print(ip + '->' + ' ' + 'Not available')
-            ip_available.append(False)
-    #print(ip_available)
+def scan_ip(ip, id):
+    global ips_scanned, ip_available
+    scanner.scan(ip, '1', '-v')
+    ips_scanned += 1
+    if(scanner[ip].state() == "up"):
+        ip_available[id] = True
+    
+def scan_all():
+    global ips_scanned, robot_selected
+    id=0
+    robot_selected = "No robot selected     "
+    start = time.time()
+    print("\nScanning...")
+    for host in hosts:
+        thread = threading.Thread(target=scan_ip, args=(host, id, ))
+        thread.start()
+        #scan_ip(host, id)
+        #print(host)
+        id += 1
+    
+    while(ips_scanned < len(hosts)):
+        wait = True
+
+    end = time.time()
+    scaning_time = end-start
+    print("Scanned in->", end = ' ')
+    print(scaning_time, end= ' ')
+    print("seconds")    
+    ips_scanned = 0
+
+    selected_label = ttk.Label(root, text = robot_selected, font='Helvetica 11 bold')
+    selected_label.grid(column=1, row=len(hosts)+1, sticky=tk.W, padx=5, pady=5)
 
 def render_gui():
-    print("Render ")
     #root window
-    root = tk.Tk()
-    root.geometry("400x280")
+    #root = tk.Tk()
+    root.geometry("400x300")
     root.title('Robots scanner')
     root.resizable(0, 0)
 
@@ -93,12 +122,11 @@ def render_gui():
     root.columnconfigure(0, weight=1)
     root.columnconfigure(1, weight=3)
 
-    err_image = Image.open('error.png').resize((25,25), Image.ANTIALIAS)
-    ok_image =  Image.open('ok.png').resize((25,25), Image.ANTIALIAS)
+    err_image = Image.open('/home/remotelab/MobileRobotSimulator/error.png').resize((25,25), Image.ANTIALIAS)
+    ok_image =  Image.open('/home/remotelab/MobileRobotSimulator/ok.png').resize((25,25), Image.ANTIALIAS)
 
     label = ttk.Label(root, text="Status")
     label.grid(column=0, row=0, sticky=tk.W, padx=(20,0), pady=5)
-
 
     i = 1
     for ip in hosts:
@@ -121,19 +149,23 @@ def render_gui():
         
         i += 1
 
-    selected_robot = "No robot selected"
-    selected_label = ttk.Label(root, text= selected_robot)
+    button_refresh = ttk.Button(root, text="Refresh", command=scan_all)
+    button_refresh.grid(column=0, row=i, sticky=tk.W, padx=5, pady=5)
+
+    selected_label = ttk.Label(root, text = robot_selected, font='Helvetica 11 bold')
     selected_label.grid(column=1, row=i, sticky=tk.W, padx=5, pady=5)
 
     root.mainloop()
 
-def main():
-    auto_scan()
-    render_gui()
 
+def main():
+    scan_all()
+    render_gui()
 
 if __name__ == '__main__':
     try:
         main()
     except:
         pass
+    finally:
+        print("Finishing...")
