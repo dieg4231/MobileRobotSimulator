@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import nmap
 import time
 import paramiko
@@ -125,7 +124,7 @@ def render_gui():
     err_image = Image.open('/home/remotelab/MobileRobotSimulator/error.png').resize((25,25), Image.ANTIALIAS)
     ok_image =  Image.open('/home/remotelab/MobileRobotSimulator/ok.png').resize((25,25), Image.ANTIALIAS)
 
-    label = ttk.Label(root, text="Status")
+    label = ttk.Label(root, text="Status", font='Helvetica 11 bold')
     label.grid(column=0, row=0, sticky=tk.W, padx=(20,0), pady=5)
 
     i = 1
@@ -161,7 +160,7 @@ def render_gui():
 def main():
     scan_all()
     render_gui()
-
+    
 if __name__ == '__main__':
     try:
         main()
@@ -169,3 +168,4 @@ if __name__ == '__main__':
         pass
     finally:
         print("Finishing...")
+
