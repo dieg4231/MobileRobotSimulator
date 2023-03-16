@@ -39,6 +39,10 @@ class MobileRobotSimulator(threading.Thread):
 		# canvas size in pixels
 		self.canvasX= 400
 		self.canvasY= 500
+		
+		self.defaultCanvasX = 600
+		self.defaultCanvasY = 600
+
 		# robot position and angle
 		self.robot_theta=0
 		self.robotX=-100
@@ -132,7 +136,7 @@ class MobileRobotSimulator(threading.Thread):
 		except ValueError:
 			parameters.append(0.0)
 		try:
-			parameters.append( self.mapY  - (self.robotY)*self.mapX / self.canvasY )
+			parameters.append( self.mapY  - (self.robotY)*self.mapY / self.canvasY )
 		except ValueError:
 			parameters.append(0.0)
 		try:
@@ -409,7 +413,30 @@ class MobileRobotSimulator(threading.Thread):
 						if words[1] == "dimensions":			  #To get world dimensions
 							self.mapX = float (words[3])	
 							self.mapY = float (words[4])
-							self.print_grid()
+							
+                                                        self.canvasX = self.defaultCanvasX
+                                                        self.canvasY = self.defaultCanvasY
+
+                                                        if self.mapX > self.mapY: 
+                                                            self.canvasX = ( self.mapX * self.canvasY ) / self.mapY
+                                                            if self.canvasX > self.screen_width_max:
+                                   				self.canvasX = self.screen_width_max
+                                                                self.canvasY = ( self.mapY * self.canvasX ) / self.mapX 
+
+                                                        elif self.mapX < self.mapY:
+                                                            self.canvasY = ( self.mapY * self.canvasX ) / self.mapX
+                                                            if self.canvasY > self.screen_height_max:
+                                   				self.canvasY = self.screen_height_max
+                                                                self.canvasX = ( self.mapX * self.canvasY ) / self.mapY    
+                                                            	
+
+                                                        
+                                                        else:
+                                                            self.canvasX = self.canvasY
+                                                        
+                                                        self.w.configure(width = self.canvasX, height = self.canvasY)
+                                                        
+                                                        self.print_grid()
 						elif words[1] == "polygon":				  #to get polygons vertex
 
 							vertex_x = [ ( ( self.canvasX * float(x) ) / self.mapX ) for x in words[4:len(words)-1:2]	]
@@ -611,7 +638,7 @@ class MobileRobotSimulator(threading.Thread):
 				self.w.delete(self.light)
 			self.light = self.w.create_image(event.x, event.y, image = self.gif2)
 			self.light_x = self.mapX*event.x / self.canvasX
-			self.light_y = self.mapY -  ( self.mapY * event.y ) / self.canvasY
+			self.light_y = self.mapY - (( self.mapY * event.y ) / self.canvasY)
 			self.entryLightX.config(text=str(self.light_x)[:4])
 			self.entryLightY.config(text=str(self.light_y)[:4])
 			self.s_t_simulation(True)
@@ -1080,7 +1107,7 @@ class MobileRobotSimulator(threading.Thread):
 			self.entryPoseY.delete ( 0, END )
 			self.entryAngle.delete ( 0, END )
 			self.entryPoseX.insert ( 0, str(float(x)*self.mapX / self.canvasX) )
-			self.entryPoseY.insert ( 0, str(self.mapY  - (float(y)*self.mapX / self.canvasY )  ))  
+			self.entryPoseY.insert ( 0, str(self.mapY  - (float(y)*self.mapY / self.canvasY )  ))  
 			if angle > math.pi*2 :  
 				angle = angle  % (math.pi*2)
 			if angle < 0 :
@@ -1603,6 +1630,8 @@ class MobileRobotSimulator(threading.Thread):
 		self.root = Tk()
 		self.root.protocol("WM_DELETE_WINDOW", self.kill)
 		self.root.title("Mobile Robot Simulator")
+		self.screen_width_max = self.root.winfo_screenwidth()   - 650
+                self.screen_height_max = self.root.winfo_screenheight() - 100
 
 		self.barMenu = Menu(self.root)
 		self.settingsMenu = Menu(self.barMenu, tearoff=0)
