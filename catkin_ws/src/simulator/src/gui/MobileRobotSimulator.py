@@ -433,7 +433,8 @@ class MobileRobotSimulator(threading.Thread):
                                                         
                                                         else:
                                                             self.canvasX = self.canvasY
-                                                        
+                                                        self.canvasX = int(self.canvasX)
+							self.canvasY = int(self.canvasY)
                                                         self.w.configure(width = self.canvasX, height = self.canvasY)
                                                         
                                                         self.print_grid()
