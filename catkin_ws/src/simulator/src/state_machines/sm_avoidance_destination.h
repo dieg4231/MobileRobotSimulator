@@ -4,19 +4,31 @@
  *      state_machine_avoidance_destination.h          	*
  *                                                      *
  *		Jesus Savage				*
- *		Diego Cordero				*
+ *		Diego Cordero                           *
+ *              Edit by  Miguel Sanchez		        *
  *		FI-UNAM					*
- *		17-2-2019                                *
+ *		17-2-2019                               *
  *                                                      *
  ********************************************************/
 
 
 
-#define THRESHOLD 31
-
-// State Machine 
-int sm_avoidance_destination(float intensity, int  dest,int obs ,movement *movements  ,int *next_state ,float Mag_Advance ,float max_twist)
+#define THRESHOLD 36
+#define LIDAR_THRESHOLD 0.16// State Machine 
+int sm_avoidance_destination(   float *observations
+                                ,int size
+                                ,float intensity
+                                , int  dest
+                                ,int obs 
+                                ,movement *movements  
+                                ,int *next_state 
+                                ,float Mag_Advance 
+                                ,float max_twist)
 {
+//Comment for simulation
+obs=quantize_laser(observations,size,LIDAR_THRESHOLD);
+
+    
 
  int state = *next_state;
  int result=0;
@@ -24,7 +36,8 @@ int sm_avoidance_destination(float intensity, int  dest,int obs ,movement *movem
 
  printf("Present State: %d \n", state);
  printf("intensity %f obstacles %d dest %d\n",intensity,obs,dest);
-
+for (int i = 0; i < size ; i++ ) 
+         printf("laser observations[%d] %f\n",i,observations[i]);
  switch ( state ) {
 
         case 0:
@@ -178,7 +191,3 @@ int sm_avoidance_destination(float intensity, int  dest,int obs ,movement *movem
  return result;
 
 }
-
-
-
-                 

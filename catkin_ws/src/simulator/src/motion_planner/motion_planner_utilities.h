@@ -13,6 +13,8 @@
 #include "simulator/simulator_algorithm_result.h"
 #include "simulator/simulator_MoveRealRobot.h"
 #include "simulator/simulator_object_interaction.h"
+#include <sensor_msgs/LaserScan.h>
+#include <std_msgs/Int16MultiArray.h>
 #include <string.h>
 
 #define GRASP 1
@@ -28,6 +30,7 @@ next_position next;
 parameters params;
 int new_simulation = 1;
 float lasers[512];
+int line_sensors[3];
 
 movement generate_output(int out ,float advance ,float twist)
 {
@@ -398,6 +401,11 @@ void laserCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 
 }
 
+void lineSensorsCallback(const std_msgs::Int16MultiArray::ConstPtr& msg){
+    line_sensors[0] = msg->data[0];
+    line_sensors[1] = msg->data[1];
+    line_sensors[2] = msg->data[2];
+}
 
 int get_lidar_values(float *lasers, float robot_x ,float robot_y, float robot_theta, bool useRealRobot)
 {

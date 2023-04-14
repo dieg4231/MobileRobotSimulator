@@ -5,6 +5,7 @@
  *                                                      *
  *              Jesus Savage                            *
  *              Diego Cordero                           *
+ *              Miguel Sanchez                          *
  *              FI-UNAM                                 *
  *              5-2-2019                                *
  *                                                      *
@@ -13,10 +14,14 @@
 
 
 // Function to get next state
-void sm_avoid_obstacles(int obs ,movement *movements  ,int *next_state ,float Mag_Advance ,float max_twist)
+#define THRESHOLD 35
+#define LIDAR_THRESHOLD 0.15
+// State Machine 
+void sm_avoid_obstacles(float *observations,int size,int obs ,movement *movements  ,int *next_state ,float Mag_Advance ,float max_twist)
 {
-
-
+//Function to use in real robot, comment to use in simulation        
+obs=quantize_laser(observations,size,LIDAR_THRESHOLD);
+printf("Obstacle :%i\n",obs);
  int state = *next_state;
 
  //printf("Next state %d \n",state );

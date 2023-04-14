@@ -144,7 +144,7 @@ int main(int argc ,char **argv)
                     est_sig = 0;
                     flagOnce = 0;
                 }
-                sm_avoid_obstacles(q_inputs,&movements,&est_sig ,params.robot_max_advance ,params.robot_turn_angle);
+                sm_avoid_obstacles(lidar_readings,params.laser_num_sensors,q_inputs,&movements,&est_sig ,params.robot_max_advance ,params.robot_turn_angle);
                 break;
 
             case 4:
@@ -156,7 +156,7 @@ int main(int argc ,char **argv)
                     est_sig = 0;
                     flagOnce = 0;
                 }
-                flg_result=sm_avoidance_destination(intensity,q_light,q_inputs,&movements,&est_sig,
+                flg_result=sm_avoidance_destination(lidar_readings,params.laser_num_sensors,intensity,q_light,q_inputs,&movements,&est_sig,
                                                     params.robot_max_advance ,params.robot_turn_angle);
 
                 if(flg_result == 1) stop();
@@ -243,7 +243,7 @@ int main(int argc ,char **argv)
                 }
                 else
                 {
-                    flg_result=sm_avoidance_destination(intensity,q_light,q_inputs,&movements,&est_sig,
+                    flg_result=sm_avoidance_destination(lidar_readings,params.laser_num_sensors,intensity,q_light,q_inputs,&movements,&est_sig,
                                                         params.robot_max_advance ,params.robot_turn_angle);
 
                     if(flg_result == 1)

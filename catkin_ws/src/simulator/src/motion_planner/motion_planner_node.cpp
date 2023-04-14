@@ -4,9 +4,10 @@
 *                                              *
 *      Jesus Savage                            *
 *      Diego Cordero                           *
+*      Miguel Sánchez                          *
 *                                              *
 *              Bio-Robotics Laboratory         *
-*              UNAM, 17-2-2020                 *
+*              UNAM, 09-2022                 *
 *                                              *
 *                                              *
 ************************************************/
@@ -21,6 +22,7 @@
 #include "../state_machines/sm_destination.h"
 #include "../state_machines/user_sm.h"
 #include "../state_machines/dijkstra.h"
+#include "../state_machines/line_follower.h"
 #include "../state_machines/dfs.h"
 #include "clips_ros/SimuladorRepresentation.h"
 #include "../behaviors/oracle.h"
@@ -33,6 +35,7 @@ int main(int argc ,char **argv)
     ros::NodeHandle n;
     ros::Subscriber params_sub = n.subscribe("simulator_parameters_pub",0, parametersCallback);
     ros::Subscriber sub = n.subscribe("/scan", 10, laserCallback);
+    ros::Subscriber subLineSensor = n.subscribe("/line_sensors", 1000, lineSensorsCallback);
     SimuladorRepresentation::setNodeHandle(&n);
     ros::Rate r(20);
 
@@ -145,7 +148,7 @@ int main(int argc ,char **argv)
                     est_sig = 0;
                     flagOnce = 0;
                 }
-                sm_avoid_obstacles(q_inputs,&movements,&est_sig ,params.robot_max_advance ,params.robot_turn_angle);
+                sm_avoid_obstacles(lidar_readings,params.laser_num_sensors,q_inputs,&movements,&est_sig ,params.robot_max_advance ,params.robot_turn_angle);
                 break;
 
             case 4:
@@ -157,7 +160,7 @@ int main(int argc ,char **argv)
                     est_sig = 0;
                     flagOnce = 0;
                 }
-                flg_result=sm_avoidance_destination(intensity,q_light,q_inputs,&movements,&est_sig,
+                flg_result=sm_avoidance_destination(lidar_readings,params.laser_num_sensors,intensity,q_light,q_inputs,&movements,&est_sig,
                                                     params.robot_max_advance ,params.robot_turn_angle);
 
                 if(flg_result == 1) stop();
@@ -244,7 +247,7 @@ int main(int argc ,char **argv)
                 }
                 else
                 {
-                    flg_result=sm_avoidance_destination(intensity,q_light,q_inputs,&movements,&est_sig,
+                    flg_result=sm_avoidance_destination(lidar_readings,params.laser_num_sensors,intensity,q_light,q_inputs,&movements,&est_sig,
                                                         params.robot_max_advance ,params.robot_turn_angle);
 
                     if(flg_result == 1)
@@ -324,13 +327,104 @@ int main(int argc ,char **argv)
                 {
                     mini_sm++;
                 }
-
-                
-                
-
                 break;
 
-             default:
+            case 12:
+            
+                flg_result=line_follower(   
+                                            lidar_readings
+                                            ,q_inputs
+                                            ,params.laser_num_sensors
+                                            ,0.210   
+                                            ,1.95
+                                            ,params.robot_max_advance 
+                                            ,params.robot_turn_angle
+                                            ,params.robot_x 
+                                            ,params.robot_y
+                                            ,params.world_name
+                                            );
+
+                if(flg_result == 1) stop();
+                break;
+                
+            case 13:
+            {
+                int stopflag=0;
+                while(!stopflag)
+                {
+                    r.sleep();
+                    ros::spinOnce();
+                    if(flagOnce)
+                    {
+                        for(i = 0; i < 200; i++)
+                            steps[i].node=-1;
+
+                        // it finds a path from the origin to node 6 using the Dijkstra algorithm
+                        final_x= 0.22;
+                        final_y= 2.33;
+                        dijkstra(params.robot_x ,params.robot_y ,final_x ,final_y ,params.world_name,steps);
+                        print_algorithm_graph (steps);
+                        i=0;
+                        set_light_position(steps[i].x,steps[i].y);
+                        printf("First Light i[%d] x = %f  y = %f \n",i,steps[i].x,steps[i].y);
+                        flagOnce = 0;
+                        flg_finish=0;
+                        est_sig = 0;
+                        //movements.twist=0.0;
+                        //movements.advance =0.0;
+                    }
+                    else
+                    {
+                        printf("i[%d] light x: %f light y: %f\n",i,params.light_x,params.light_y);
+                        flg_result=line_follower(
+                                                lidar_readings
+                                                ,q_inputs
+                                                ,params.laser_num_sensors
+                                                ,params.light_x 
+                                                ,params.light_y
+                                                ,params.robot_max_advance 
+                                                ,params.robot_turn_angle
+                                                ,params.robot_x 
+                                                ,params.robot_y
+                                                ,params.world_name
+                                                );
+                        printf("result: %d\n",flg_result);
+                        //scanf("i[%d]\n",i);
+                        if(flg_result)
+                        {
+                            if(flg_finish == 1) 
+                                { 
+                                    stop();
+                                    stopflag=1;
+                                }
+                            else
+                            {
+                                if(steps[i].node != -1)
+                                {
+                                    set_light_position(steps[i].x,steps[i].y);
+                                    printf("New Light %d: x = %f  y = %f \n",i,steps[i].x,steps[i].y);
+                                    printf("Node %d\n",steps[i].node);
+                                    printf("i: %d\n",i);
+                                    i++;
+                                    //printf("type a number \n");
+                                    //scanf("%d",&tmp);
+                                }
+                                else
+                                {
+                                    set_light_position(final_x,final_y);
+                                    printf("Last node %d: x = %f  y = %f \n",i,final_x,final_y);
+                                    flg_finish=1;
+
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+            }
+                break;
+
+            default:
                     printf(" ******* SELECTION NO DEFINED *******\n");
                     movements.twist = 3.1416/4;
                     movements.advance = .03;
