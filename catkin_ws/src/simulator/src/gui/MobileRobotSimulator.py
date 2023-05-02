@@ -54,6 +54,8 @@ class MobileRobotSimulator(threading.Thread):
 		self.polygonMap = []
 		self.nodes_image = None
 		self.light=-1
+		self.light1=-1
+		self.light2=-1
 		self.robot=-1
 
 		self.flagOnce=False
@@ -596,14 +598,15 @@ class MobileRobotSimulator(threading.Thread):
 				self.w.delete(trace)
 			self.trace_route = []
 			self.isRunning = True
-			
+			self.start_record = True
+
 		else: 
 			self.denable('normal')
 			self.startFlag=False
 			self.entrySteps.delete ( 0, END )
 			self.entrySteps.insert ( 0, str(self.steps_aux)  )
 			self.isRunning = False
-       
+			self.finish_record = True
 
 	def rewindF(self): # When  the "Last simulation" button is pressed
 		self.denable('disabled')
@@ -622,7 +625,6 @@ class MobileRobotSimulator(threading.Thread):
 		self.buttonStop.configure(state='normal')
 
 	def set_light_position(self,x,y): # Another way to start simulations, by plot the light ( goal point ).
-		
 		if self.light >0:
 			self.w.delete(self.light)
 		y1 = self.mapY - y 
@@ -631,7 +633,22 @@ class MobileRobotSimulator(threading.Thread):
 		self.light_y = y 
 		self.entryLightX.config(text=str(self.light_x)[:4])
 		self.entryLightY.config(text=str(self.light_y)[:4])
-
+		
+	def set_light_position1(self,x,y,visible): # Another way to start simulations, by plot the light ( goal point ).
+		if self.light1 >0:
+			self.w.delete(self.light1)
+		y1 = self.mapY - y 
+		self.light1 = self.w.create_image(x/self.mapX*self.canvasX, y1/self.mapY*self.canvasY, image = self.gif2)
+		if visible is False:
+			self.w.delete(self.light1)
+	
+	def set_light_position2(self,x,y,visible): # Another way to start simulations, by plot the light ( goal point ).	
+		if self.light2 >0:
+			self.w.delete(self.light2)
+		y1 = self.mapY - y 
+		self.light2 = self.w.create_image(x/self.mapX*self.canvasX, y1/self.mapY*self.canvasY, image = self.gif2)
+		if visible is False:
+			self.w.delete(self.light2)
 
 	def right_click(self,event): # Another way to start simulations, by plot the light ( goal point ).
 		if not self.startFlag and not self.varTurtleBot.get():
@@ -885,6 +902,11 @@ class MobileRobotSimulator(threading.Thread):
 				self.w.delete(trace)
 			self.trace_route = []
 
+			self.entryFile.delete(0, END)
+			self.entryFile.insert(0, 'arena2')
+			self.read_map()
+
+			'''
 			for polygon in self.polygonMap :
 				self.w.delete(polygon)
 			self.polygonMap = []
@@ -898,7 +920,7 @@ class MobileRobotSimulator(threading.Thread):
 
 			self.buttonMapLess.configure(state="normal")
 			self.buttonMapMore.configure(state="normal")
-			self.print_grid(1)
+			self.print_grid(1)'''
 			#self.robotX=self.canvasX/2
 			#self.robotY=self.canvasY/2
 			#self.robot_theta=0
@@ -960,15 +982,19 @@ class MobileRobotSimulator(threading.Thread):
 		self.buttonPlotTopological.configure(state=state)
 
 	def turn_light(self):
-		'''if self.varLight1.get():
-			print("Turn on light 1")
+		if self.varLight1.get():
+			self.set_light_position1(0.8, 2.4, True)
+			#print("Turn on light 1")
 		else:
-			print("Turn off light 1")
+			self.set_light_position1(0.8, 2.4, False)
+			#print("Turn off light 1")
 		if self.varLight2.get():
-			print("Turn on light 2")
+			self.set_light_position2(0.46, 0.24, True)
+			#print("Turn on light 2")
 		else:
-			print("Turn off light 2")
-		print("---------------")'''
+			self.set_light_position2(0.46, 0.24, False)
+			#print("Turn off light 2")
+		#print("---------------")
 
 	#####################################################################
 	#####################################################################
@@ -1691,7 +1717,7 @@ class MobileRobotSimulator(threading.Thread):
 		self.entryLightX = Label(self.rightMenu ,text = "Click Right" ,background = self.backgroundColor ,font = self.lineFont ,justify='center')
 		self.entryLightY = Label(self.rightMenu ,text = "Click Right" ,background = self.backgroundColor ,font = self.lineFont ,justify='center')
 		self.entryStepsExcec = Label(self.rightMenu ,text = "0" ,background = self.backgroundColor ,font = self.lineFont ,justify='center')
-		self.entryFile.insert ( 0, 'arena' )
+		self.entryFile.insert ( 0, 'arena2' )
 		self.entrySteps.insert( 0, '100' )
 		self.entryBehavior.insert ( 0, '4' )
 

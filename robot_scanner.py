@@ -3,6 +3,7 @@ import time
 import paramiko
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox as MessageBox
 from pexpect import pxssh
 from PIL import Image, ImageTk
 import os
@@ -10,13 +11,15 @@ import rosgraph
 import shlex
 from psutil import Popen
 import threading
+import subprocess
+
 
 hosts =   ['192.168.0.165',
          '192.168.0.181',
          '192.168.0.106',
          '192.168.0.195',
          '192.168.0.110',
-         '192.168.0.193'
+         '192.168.0.189'
           ]
 
 ips_scanned = 0
@@ -25,13 +28,21 @@ robot_selected = "No robot selected"
 ip_available = [False, False, False, False, False, False]
 root = tk.Tk()
 
+#user = 'remote_laboratory'
+#passw = 'pumaspumas'
+user = 'pi'
+passw = 'raspberry'
+
+userName = os.environ.get("USERNAME")
 
 def launch_simulator(ip):
     os.environ["ROS_MASTER_URI"]="http://" + ip + ":11311"
     if(rosgraph.is_master_online()):
-        node_process = Popen(
-            shlex.split('roslaunch simulator minibot.launch')
-        )
+        process = subprocess.check_call(['/home/' + userName
+                                    + '/MobileRobotSimulator/./runSimulator.sh', ip])
+
+        print("Process finished")
+        #process.kill()
 
 def ros_finder(ip):
     os.environ["ROS_MASTER_URI"]="http://" + ip + ":11311"
@@ -45,35 +56,44 @@ def ros_finder(ip):
 def connect_host(ip):
     print('Connecting with->' + ip)
 
-    ssh = paramiko.SSHClient()
+    try:
+        ssh = paramiko.SSHClient()
 
-    # Load SSH host keys.
-    ssh.load_system_host_keys()
-    # Add SSH host key automatically if needed.
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        # Load SSH host keys.
+        ssh.load_system_host_keys()
+        # Add SSH host key automatically if needed.
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-    user = 'remote_laboratory'
-    passw = 'pumaspumas'
+        # Connect to router using username/password authentication.
+        ssh.connect(ip, username=user, password=passw, look_for_keys=False, timeout=10)
+        transport = ssh.get_transport()
+        channel = transport.open_session()
 
-    # Connect to router using username/password authentication.
-    ssh.connect(ip, username=user, password=passw, look_for_keys=False, timeout=10)
-    transport = ssh.get_transport()
-    channel = transport.open_session()
+        channel.exec_command('~/Minibot/start.sh')
+        #MessageBox.showinfo("Connecting", "Please wait...")
+        print("Searching ROS MASTER...")
+        while True:
+            if(ros_finder(ip)):
+                break
+        launch_simulator(ip)
 
-    channel.exec_command('~/Minibot/start.sh')
-    print("Searching ROS MASTER...")
-    while True:
-        if(ros_finder(ip)):
-            break
-    launch_simulator(ip)
+        print("Killing rosmaster for Minibot")
+        ssh.exec_command('killall rosmaster')
+        #channel.exec_command('killall rosmaster')
+        channel.close()
+        ssh.close()
 
-    channel.close()
-    ssh.close()
+    except Exception as e:
+        print(e)
+        MessageBox.showerror("Error message", "Cannot connect with robot")
+        
+
         
 def event(i):
     global robot_selected
-    connect_host(hosts[i-1])
     robot_selected = "Selected->" + " Minibot " + str(i)
+    connect_host(hosts[i-1])
+
     selected_label = ttk.Label(root, text = robot_selected, font='Helvetica 11 bold')
     selected_label.grid(column=1, row=len(hosts)+1, sticky=tk.W, padx=5, pady=5)
 
@@ -93,8 +113,6 @@ def scan_all():
     for host in hosts:
         thread = threading.Thread(target=scan_ip, args=(host, id, ))
         thread.start()
-        #scan_ip(host, id)
-        #print(host)
         id += 1
     
     while(ips_scanned < len(hosts)):
@@ -111,9 +129,7 @@ def scan_all():
     selected_label.grid(column=1, row=len(hosts)+1, sticky=tk.W, padx=5, pady=5)
 
 def render_gui():
-    #root window
-    #root = tk.Tk()
-    root.geometry("400x300")
+    root.geometry("400x360")
     root.title('Robots scanner')
     root.resizable(0, 0)
 
@@ -167,5 +183,5 @@ if __name__ == '__main__':
     except:
         pass
     finally:
-        print("Finishing...")
+        print("Finishing robot_scanner.py...")
 

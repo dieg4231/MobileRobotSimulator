@@ -15,6 +15,7 @@ import time
 import rospy
 from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3, PoseStamped
 from std_msgs.msg import Int8MultiArray
+import tkMessageBox
 
 
 gui=MobileRobotSimulator()
@@ -24,6 +25,7 @@ battery_charging = False
 
 video_name = ""
 video_path = "/home/" + os.environ.get("USERNAME") + "/MobileRobotSimulator/catkin_ws/recordings/"
+#video_path = "/home/" + 'admin' + "/MobileRobotSimulator/catkin_ws/recordings/"
 
 def handlePoseByAruco(msg):
 	quaternion = (
@@ -166,6 +168,7 @@ def play_recording():
 	print("playing video: " + video_path + video_name)
 
 def transfer_video():
+	tkMessageBox.showinfo("Video loading", "Loading video..." +  video_name )
 	time.sleep(6)
 	try:
 		video_transfer = rospy.ServiceProxy('/transfer_file', TransferFile)
@@ -175,6 +178,7 @@ def transfer_video():
 			rospy.logerr("Video was not found")
 	except:
 		print("/transfer_file service couldnt get response")
+		tkMessageBox.showerror("Video loading", "There was an error loading video" )
 
 def start_recording():
 	global video_name
@@ -185,9 +189,11 @@ def start_recording():
 		if(video_name != ""):		
 			gui.labelVideoNamed = Label(gui.rightMenu, text = "File: " + video_name, font = gui.lineFont)
 			gui.labelVideoNamed.grid(column = 0 ,row = 24 ,sticky = (N, W) ,padx = 0, pady = 65,columnspan = 3)
-		
+			tkMessageBox.showinfo("Video recording", "Video recording has started")
+
 	except rospy.ServiceException as e:
 		print("/start_recording service couldnt get response")
+		tkMessageBox.showerror("Video recording", "There was an errro recording video")
 
 def stop_recording():
 	try:
@@ -373,3 +379,4 @@ if __name__ == "__main__":
 	time.sleep(5) #
 	ros()
 	turn_lights([0, 0, 0, 0, 0, 0])
+	print("Finishing...")
