@@ -1840,6 +1840,7 @@ class MobileRobotSimulator(threading.Thread):
 		self.buttonMoveStop      = Button(self.rightMenu, width = 1, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont, text ="||", command = self.moveBotStop)
 		self.buttonCompile		 = Button(self.rightMenu, width = 8, height = 2, font = self.buttonFont, text ="Compile", command = self.compileMessage)
 		self.buttonViewerArena	 = Button(self.rightMenu, width = 10, height = 2, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont, text ="View real", command = self.viewArena)
+		self.buttonReturnHome	 = Button(self.rightMenu, width = 10, height = 2, foreground = self.buttonFontColor, background = self.buttonColor , font = self.buttonFont, text ="Return home", command = self.viewArena)
 
 		self.buttonStartRecording = Button(self.rightMenu, image = self.recordImg, width = 20, font = self.buttonFont, command = self.startRecording)
 		self.buttonStopRecording  = Button(self.rightMenu, image = self.stopImg,   width = 20, font = self.buttonFont, command = self.stopRecording)
@@ -1925,7 +1926,7 @@ class MobileRobotSimulator(threading.Thread):
 		self.buttonStopRecording.grid(column = 1, row = 24, columnspan = 1, sticky = (N, W), padx = (35,0), pady = 20)
 		self.buttonPlayRecording.grid(column = 1, row = 24, columnspan = 1, sticky = (N, W), padx = (65,0), pady = 20)
 		self.buttonViewerArena  .grid(column = 4, row = 24, columnspan = 3, sticky = (N, W), padx = (35,0), pady = 0)
-
+		self.buttonReturnHome  .grid(column = 4, row = 23, columnspan = 3, sticky = (N, W), padx = (35,0), pady = 0)
 
 
 		#self.buttonMapLess.grid(column = 1 ,row = 19 ,columnspan=1 ,sticky = (N, W) ,padx = 5)
